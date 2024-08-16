@@ -15,6 +15,8 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
+import Link from '@mui/material/Link';
+import '@fontsource/inter';
 import { useState } from "react";
 
 const drawerWidth = 240;
@@ -63,7 +65,7 @@ function Navbar(props) {
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
       <AppBar component="nav" sx={{ backgroundColor: 'black', minHeight: '80px' }}>
-        <Toolbar sx={{ justifyContent: 'space-between', alignItems: 'center', mt: 1 }}>
+        <Toolbar sx={{ justifyContent: 'space-between', alignItems: 'center', mt: 1, p: 2 }}>
           <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -78,14 +80,14 @@ function Navbar(props) {
           </Box>
           <Box sx={{ display: { xs: 'none', sm: 'flex' }, alignItems: 'center' }}>
             {navItems.map((item) => (
-              <Button key={item} sx={{ color: '#fff', mx: 4 }}>
+              <Button key={item} sx={{ color: '#fff', mx: 4, ':hover': {borderBottom: '1px solid white'} }}>
                 {item}
               </Button>
             ))}
             {/* Add the Sign In / Sign Up buttons */}
-            <Button sx={{ color: '#fff', mx: 1 }}>Sign In</Button>
+            <Button variant="text" sx={{ color: '#fff', mx: 1, ':hover': {borderBottom: '1px solid white'}}}>Sign In</Button>
             <Typography color="#fff">/</Typography>
-            <Button sx={{ color: '#fff', mx: 1 }}>Sign Up</Button>
+            <Button sx={{ color: '#fff', mx: 1, ':hover': {borderBottom: '1px solid white'} }}>Sign Up</Button>
           </Box>
         </Toolbar>
       </AppBar>
