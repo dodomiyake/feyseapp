@@ -15,8 +15,6 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import Link from '@mui/material/Link';
-import '@fontsource/inter';
 import { useState } from "react";
 
 const drawerWidth = 240;
@@ -64,7 +62,16 @@ function Navbar(props) {
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <AppBar component="nav" sx={{ backgroundColor: 'black', minHeight: '80px' }}>
+      <AppBar
+        component="nav"
+        sx={{
+          backgroundColor: 'black',
+          minHeight: '80px',
+          zIndex: 1200, // Make sure the AppBar is below the header
+          position: 'fixed', // Ensure it's fixed at the top
+          width: '100%', // Ensure it takes full width
+        }}
+      >
         <Toolbar sx={{ justifyContent: 'space-between', alignItems: 'center', mt: 1, p: 2 }}>
           <IconButton
             color="inherit"
@@ -80,14 +87,14 @@ function Navbar(props) {
           </Box>
           <Box sx={{ display: { xs: 'none', sm: 'flex' }, alignItems: 'center' }}>
             {navItems.map((item) => (
-              <Button key={item} sx={{ color: '#fff', mx: 4, ':hover': {borderBottom: '1px solid white'} }}>
+              <Button key={item} sx={{ color: '#fff', mx: 4, ':hover': { borderBottom: '1px solid white' } }}>
                 {item}
               </Button>
             ))}
             {/* Add the Sign In / Sign Up buttons */}
-            <Button variant="text" sx={{ color: '#fff', mx: 1, ':hover': {borderBottom: '1px solid white'}}}>Sign In</Button>
+            <Button variant="text" sx={{ color: '#fff', mx: 1, ':hover': { borderBottom: '1px solid white' } }}>Sign In</Button>
             <Typography color="#fff">/</Typography>
-            <Button sx={{ color: '#fff', mx: 1, ':hover': {borderBottom: '1px solid white'} }}>Sign Up</Button>
+            <Button sx={{ color: '#fff', mx: 1, ':hover': { borderBottom: '1px solid white' } }}>Sign Up</Button>
           </Box>
         </Toolbar>
       </AppBar>
@@ -101,7 +108,7 @@ function Navbar(props) {
             keepMounted: true, // Better open performance on mobile.
           }}
           sx={{
-            display: { xs: 'block', sm: 'none' },
+            display: { xs: 'block', sm: 'none', md: 'none' },
             '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
           }}
         >
