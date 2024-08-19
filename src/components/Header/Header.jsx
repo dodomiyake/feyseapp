@@ -1,88 +1,101 @@
 import "./Header.css";
-import { Box } from "@mui/material";
-import { experimentalStyled as styled } from "@mui/material/styles";
-import Paper from "@mui/material/Paper";
-import Grid from "@mui/material/Unstable_Grid2";
-import "@fontsource/inter";
+import PropTypes from "prop-types";
+import Box from "@mui/material/Box";
+import bgImg from "./bgImg.jpg";
+import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import Typography from '@mui/material/Typography';
-import Stack from "@mui/joy/Stack";
 
-// Styled Paper component
-const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
-  ...theme.typography.body2,
-  padding: theme.spacing(0),
-  color: theme.palette.text.secondary,
-  height: "100%",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "left",
-  backgroundSize: "cover",
-  backgroundPosition: "center",
-  backgroundRepeat: "no-repeat"
-}));
-
-// Create theme with custom typography
-const theme = createTheme();
-
-theme.typography.h1 = {
-  fontSize: "3rem",  
-    lineHeight: '60px',
-  "@media (min-width:600px)": {
-    fontSize: "3rem"
+// Define custom theme
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: "#3f51b5",
+    },
+    secondary: {
+      main: "#f50057",
+    },
   },
-  [theme.breakpoints.up("md")]: {
-    fontSize: "3.2rem",
-    lineHeight: '60px'
-  }
+});
+
+// Item component
+function Item(props) {
+  const { sx, ...other } = props;
+  return (
+    <Box
+      sx={{
+        bgcolor: (theme) =>
+          theme.palette.mode === "dark" ? "#101010" : "#fff",
+        color: (theme) =>
+          theme.palette.mode === "dark" ? "grey.300" : "grey.800",
+        border: "1px solid",
+        borderColor: (theme) =>
+          theme.palette.mode === "dark" ? "grey.800" : "grey.300",
+        p: 1,
+        m: 1,
+        borderRadius: 2,
+        fontSize: "0.875rem",
+        fontWeight: "700",
+        ...sx,
+      }}
+      {...other}
+    />
+  );
+}
+
+Item.propTypes = {
+  sx: PropTypes.oneOfType([
+    PropTypes.arrayOf(
+      PropTypes.oneOfType([PropTypes.func, PropTypes.object, PropTypes.bool])
+    ),
+    PropTypes.func,
+    PropTypes.object,
+  ]),
 };
 
+// Header component
 export default function Header() {
   return (
-    <Box sx={{ flexGrow: 1, height: "100vh", width: "100%" }}>
-      {" "}
-      {/* Full viewport height */}
-      <Grid
-        container
-        spacing={0} // Remove spacing to make items fill the space
-        columns={{ xs: 2, sm: 8, md: 12 }}
-        sx={{ height: "100%", width: "100%" }} // Ensure Grid container takes full height
+    <ThemeProvider theme={theme}>
+      <Box
+        sx={{
+          backgroundImage: `url(${bgImg})`,
+          backgroundSize: "cover",
+          backgroundPosition: { xs: "center", md: "right" },
+          width: "100vw",
+          height: "87vh",
+          overflow: "hidden",
+          display: "flex",
+          justifyContent: "flex-start",
+          alignItems: "center",
+          paddingLeft: { xs: "20px", md: "35px" },
+          textAlign: "left",
+          objectFit: "cover",
+          [theme.breakpoints.down("xs")]: {
+            backgroundImage: "none",
+          },
+        }}
+        className="header"
       >
-        <Grid
-          xs={2}
-          sm={8}
-          md={6}
-          sx={{ height: "100%", width: "100%", textAlign: "left" }}
-        >
-          <Item>
-            <ThemeProvider theme={theme}>
-              <Stack>
-                <Typography variant="h1" gutterBottom textColor="black" fontFamily="inter" color="common.black" >
-                  Discover your style <br />with us
-                </Typography>
-
-                <Typography
-                  level="body-md"
-                  fontFamily="inter"
-                  fontSize='15px'
-                  variant="subtitle1" 
-                  color="common.black"
-                  gutterBottom
-                >
-                  Where style meets comfort and quality. We design for those who
-                  value <br /> both fashion and functionality. From everyday essentials
-                  to statement <br />pieces. Elevate your wardrobe with Feyse and
-                  discover the perfect<br /> balance of trend and timelessness.
-                </Typography>
-              </Stack>
-            </ThemeProvider>
-          </Item>
-        </Grid>
-        <Grid xs={2} sm={8} md={6} sx={{ height: "100%" }}>
-          <Item sx={{ backgroundImage: `url('/f34.jpeg')` }}></Item>
-        </Grid>
-      </Grid>
-    </Box>
+        <div>
+          <Typography
+            variant="h1"
+            component="h1"
+            sx={{ fontSize: { xs: 34, sm: 40, md: 46 }, fontWeight: "bold" }}
+          >
+            Discover your style with us
+          </Typography>
+          <Typography
+            variant="body1"
+            component="p"
+            sx={{ fontSize: { xs: 14, sm: 16, md: 18 } }}
+          >
+            Where style meets comfort and quality. We design for those who <br />
+            value both fashion and functionality. From everyday essentials <br />
+            to statement pieces. Elevate your wardrobe with Feyse and <br />
+            discover the perfect balance of trend and timelessness.
+          </Typography>
+        </div>
+      </Box>
+    </ThemeProvider>
   );
 }

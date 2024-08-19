@@ -9,7 +9,7 @@ const App = () => {
   return (
     <div className='app'>
       <Navbar />
-      <Box sx={{ mt: '80px', p: 2 }}>
+      <Box sx={{ mt: '85px' }}>
         <Routes>
         <Route path='/' element={<Home />} />
       </Routes>

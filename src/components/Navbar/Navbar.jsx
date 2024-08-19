@@ -78,14 +78,14 @@ function Navbar(props) {
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { sm: 'none' } }}
+            sx={{ mr: 2, display: { md: 'none' } }}
           >
             <MenuIcon />
           </IconButton>
           <Box component="div" sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
             <img src={assets.feyse} alt="Logo" style={{ height: 60, marginRight: 16 }} />
           </Box>
-          <Box sx={{ display: { xs: 'none', sm: 'flex' }, alignItems: 'center' }}>
+          <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
             {navItems.map((item) => (
               <Button key={item} sx={{ color: '#fff', mx: 4, ':hover': { borderBottom: '1px solid white' } }}>
                 {item}
@@ -108,7 +108,7 @@ function Navbar(props) {
             keepMounted: true, // Better open performance on mobile.
           }}
           sx={{
-            display: { xs: 'block', sm: 'none', md: 'none' },
+            display: { xs: 'block', md: 'none' },
             '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
           }}
         >
@@ -120,11 +120,7 @@ function Navbar(props) {
 }
 
 Navbar.propTypes = {
-    /**
-     * Injected by the documentation to work in an iframe.
-     * You won't need it on your project.
-     */
-    window: PropTypes.func,
+  window: PropTypes.func,
 };
 
 export default Navbar;
