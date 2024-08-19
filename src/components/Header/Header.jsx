@@ -4,6 +4,7 @@ import Box from "@mui/material/Box";
 import bgImg from "./bgImg.jpg";
 import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { CssBaseline } from "@mui/material";
 
 // Define custom theme
 const theme = createTheme({
@@ -56,6 +57,7 @@ Item.propTypes = {
 export default function Header() {
   return (
     <ThemeProvider theme={theme}>
+      <CssBaseline />
       <Box
         sx={{
           backgroundImage: `url(${bgImg})`,
@@ -80,18 +82,18 @@ export default function Header() {
           <Typography
             variant="h1"
             component="h1"
-            sx={{ fontSize: { xs: 34, sm: 40, md: 46 }, fontWeight: "bold" }}
+            sx={{ fontSize: { xs: 34, sm: 40, md: 46 }, fontWeight: "bold", marginBottom: '8px' }}
           >
             Discover your style with us
           </Typography>
           <Typography
             variant="body1"
             component="p"
-            sx={{ fontSize: { xs: 14, sm: 16, md: 18 } }}
+            sx={{ fontSize: { xs: 10, sm: 12, md: 14 }, fontFamily: 'Georgia', lineHeight: 1.8,}}
           >
-            Where style meets comfort and quality. We design for those who <br />
-            value both fashion and functionality. From everyday essentials <br />
-            to statement pieces. Elevate your wardrobe with Feyse and <br />
+            Where style meets comfort and quality. We design for those who
+            value both fashion<br /> and functionality. From everyday essentials
+            to statement pieces. Elevate your <br />wardrobe with Feyse and 
             discover the perfect balance of trend and timelessness.
           </Typography>
         </div>
