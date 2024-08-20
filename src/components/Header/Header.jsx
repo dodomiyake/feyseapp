@@ -63,7 +63,7 @@ export default function Header() {
           backgroundImage: `url(${bgImg})`,
           backgroundSize: "cover",
           backgroundPosition: { xs: "center", md: "right" },
-          width: "100vw",
+          width: "100%",
           height: "87vh",
           overflow: "hidden",
           display: "flex",
