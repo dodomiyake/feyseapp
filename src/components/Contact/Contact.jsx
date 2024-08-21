@@ -13,8 +13,7 @@ import TwitterIcon from '@mui/icons-material/Twitter';
 import InstagramIcon from '@mui/icons-material/Instagram';
 
 const Item = styled(Paper)(({ theme }) => ({
-  // Remove background color
-  backgroundColor: "transparent",
+  backgroundColor: "transparent", // Remove background color
   ...theme.typography.body2,
   padding: theme.spacing(2),
   textAlign: "left",
@@ -33,13 +32,26 @@ export default function Contact() {
         padding: "20px",
         backgroundColor: "#13100f", // Dark color for contrast
         display: "flex",
-        justifyContent: "center", // Center items horizontally
-        alignItems: "center", // Center items vertically
+        flexDirection: "column", // Stack elements vertically
+        alignItems: "center", // Center items horizontally
         textAlign: "center"
       }}
     >
+      <Typography
+        variant="h3"
+        color="initial"
+        sx={{
+          color: "#fff",
+          textAlign: "center",
+          fontFamily: "Georgia",
+          marginBottom: '20px',
+          fontSize: { xs: 24, sm: 35, md: 40 }
+        }}
+      >
+        Contact
+      </Typography>
       <Grid container spacing={3} justifyContent="center">
-        <Grid item xs={12} md={6} lg={4}>
+        <Grid item xs={12} md={12} lg={4}>
           <Item>
             <Typography variant="h6">
               Lorem ipsum dolor sit amet

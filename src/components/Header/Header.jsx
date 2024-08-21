@@ -5,6 +5,10 @@ import bgImg from "./bgImg.jpg";
 import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { CssBaseline } from "@mui/material";
+import styled, { keyframes } from 'styled-components';
+import { bounce } from 'react-animations';
+
+
 
 // Define custom theme
 const theme = createTheme({
@@ -17,6 +21,12 @@ const theme = createTheme({
     },
   },
 });
+
+const bounceAnimation = keyframes`${bounce}`;
+
+const BouncyDiv = styled.div`
+  animation: 1s ${bounceAnimation};
+`;
 
 // Item component
 function Item(props) {
@@ -79,6 +89,7 @@ export default function Header() {
         className="header"
       >
         <div>
+          <BouncyDiv>
           <Typography
             variant="h1"
             component="h1"
@@ -96,6 +107,7 @@ export default function Header() {
             to statement pieces. Elevate your <br />wardrobe with Feyse and 
             discover the perfect balance of trend and timelessness.
           </Typography>
+          </BouncyDiv>
         </div>
       </Box>
     </ThemeProvider>

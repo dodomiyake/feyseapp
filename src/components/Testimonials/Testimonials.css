@@ -1,0 +1,3 @@
+.slick-prev:before, .slick-next:before {
+    color: black; /* Change the scroll icon color to black */
+  }
