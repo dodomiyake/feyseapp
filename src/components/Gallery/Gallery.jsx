@@ -2,10 +2,14 @@ import * as React from "react";
 import Box from "@mui/material/Box";
 import ImageList from "@mui/material/ImageList";
 import ImageListItem from "@mui/material/ImageListItem";
-import { images } from "../../assets/assets";
 import Typography from "@mui/material/Typography";
+import { useTheme, useMediaQuery } from "@mui/material";
+import { images } from "../../assets/assets";
 
 export default function Gallery() {
+  const theme = useTheme(); // Get the current theme
+  const matchDownSm = useMediaQuery(theme.breakpoints.down('sm')); // Use the media query hook
+
   return (
     <Box
       sx={{
@@ -28,7 +32,11 @@ export default function Gallery() {
       >
         Features
       </Typography>
-      <ImageList variant="masonry" cols={3} gap={20}>
+      <ImageList
+        variant="masonry"
+        cols={matchDownSm ? 1 : 3} // Adjust columns based on media query
+        gap={20}
+      >
         {itemData.map((item) => (
           <ImageListItem key={item.img}>
             <img
@@ -46,52 +54,16 @@ export default function Gallery() {
 }
 
 const itemData = [
-  {
-    img: images.f1,
-    title: "f1"
-  },
-  {
-    img: images.f2,
-    title: "f2"
-  },
-  {
-    img: images.f3,
-    title: "f3"
-  },
-  {
-    img: images.f4,
-    title: "f4"
-  },
-  {
-    img: images.f5,
-    title: "f5"
-  },
-  {
-    img: images.f6,
-    title: "f6"
-  },
-  {
-    img: images.f7,
-    title: "f7"
-  },
-  {
-    img: images.f8,
-    title: "f8"
-  },
-  {
-    img: images.f9,
-    title: "f9"
-  },
-  {
-    img: images.f10,
-    title: "f10"
-  },
-  {
-    img: images.f11,
-    title: "f11"
-  },
-  {
-    img: images.f12,
-    title: "f12"
-  }
+  { img: images.f1, title: "f1" },
+  { img: images.f2, title: "f2" },
+  { img: images.f3, title: "f3" },
+  { img: images.f4, title: "f4" },
+  { img: images.f5, title: "f5" },
+  { img: images.f6, title: "f6" },
+  { img: images.f7, title: "f7" },
+  { img: images.f8, title: "f8" },
+  { img: images.f9, title: "f9" },
+  { img: images.f10, title: "f10" },
+  { img: images.f11, title: "f11" },
+  { img: images.f12, title: "f12" },
 ];

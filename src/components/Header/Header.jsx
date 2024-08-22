@@ -74,7 +74,7 @@ export default function Header() {
           backgroundSize: "cover",
           backgroundPosition: { xs: "center", md: "right" },
           width: "100%",
-          height: "87vh",
+          height: "100vh",
           overflow: "hidden",
           display: "flex",
           justifyContent: "flex-start",
