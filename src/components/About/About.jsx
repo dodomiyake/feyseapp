@@ -1,7 +1,6 @@
 import * as React from "react";
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
-import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import { images } from "../../assets/assets";
@@ -16,6 +15,7 @@ const EqualHeightItem = styled(Grid)({
   display: 'flex',
   alignItems: 'stretch',
 });
+
 
 export default function About() {
   return (
@@ -48,7 +48,7 @@ export default function About() {
             />
           </EqualHeightItem>
           <EqualHeightItem item xs={12} md={8}>
-            <Typography variant="body2" color="initial" sx={{ flex: 1, lineHeight: 2.5, marginTop: 3, paddingLeft: "10px"}}>
+            <Typography variant="body2" color="initial" sx={{ flex: 1, lineHeight: 2.5, marginTop: 1, paddingLeft: "10px"}}>
               Quisque venenatis augue metus, at elementum ligula dignissim ac.
               Maecenas quam turpis, placerat at ligula id, viverra aliquam nisl.
               Donec sagittis nisi vitae nibh tincidunt bibendum. Cras a aliquam
@@ -70,6 +70,8 @@ export default function About() {
               litora torquent per conubia nostra, per inceptos himenaeos. Donec
               eget pulvinar ante. Nunc a dapibus libero, ut volutpat odio.
               Phasellus porta ultricies sem, imperdiet placerat nibh lacinia id.
+              Duis quis fermentum urna, vel sodales ligula.Phasellus porta ultricies sem, imperdiet placerat nibh lacinia id.
+              Duis quis fermentum urna, vel sodales ligula.Phasellus porta ultricies sem, imperdiet placerat nibh lacinia id.
               Duis quis fermentum urna, vel sodales ligula.
             </Typography>
            

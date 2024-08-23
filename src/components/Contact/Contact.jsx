@@ -11,6 +11,8 @@ import LocalPhoneIcon from "@mui/icons-material/LocalPhone";
 import FacebookIcon from '@mui/icons-material/Facebook';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import InstagramIcon from '@mui/icons-material/Instagram';
+import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn } from 'react-icons/fa';
+import { Button, IconButton, Link } from '@mui/material';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: "transparent", // Remove background color
@@ -21,6 +23,13 @@ const Item = styled(Paper)(({ theme }) => ({
   border: `1px solid ${theme.palette.divider}`, // Optional: add a border for visibility
   boxShadow: "none" // Remove default Paper shadow
 }));
+
+const SocialButton = styled(IconButton)({
+  color: '#fff',
+  '&:hover': {
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+  },
+});
 
 export default function Contact() {
   return (
@@ -104,10 +113,19 @@ export default function Contact() {
                 Social Media
               </Typography>
             </Box>
-            <Box sx={{ paddingLeft: 5, marginBottom: 2 }}>
-              <FacebookIcon sx={{ marginRight: 3, color: "#fff" }} />
-              <TwitterIcon sx={{ marginRight: 3, color: "#fff" }} />
-              <InstagramIcon sx={{ marginRight: 3, color: "#fff" }} />
+            <Box mb={2} pl={3}>
+              <SocialButton aria-label="facebook">
+                <FaFacebookF />
+              </SocialButton>
+              <SocialButton aria-label="twitter">
+                <FaTwitter />
+              </SocialButton>
+              <SocialButton aria-label="instagram">
+                <FaInstagram />
+              </SocialButton>
+              <SocialButton aria-label="linkedin">
+                <FaLinkedinIn />
+              </SocialButton>
             </Box>
             <Box
               sx={{ display: "flex", alignItems: "center", marginBottom: 1 }}
