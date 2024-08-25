@@ -16,7 +16,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import { useState } from "react";
-import { Link } from 'react-scroll'; // Import the Link component from react-scroll
+import { Link } from "react-scroll"; // Import the Link component from react-scroll
 
 const drawerWidth = 240;
 const navItems = ["About", "Feature", "Contact"];
@@ -38,9 +38,17 @@ function Navbar(props) {
       <List>
         {navItems.map((item) => (
           <ListItem key={item} disablePadding>
-            <ListItemButton sx={{ textAlign: "center" }}>
+            <Link
+              to={item.toLowerCase()}
+              spy={true}
+              smooth={true}
+              duration={500}
+            >
+            <ListItemButton sx={{ textAlign: "center", width: '100%',
+                  justifyContent: 'center',
+                  padding: '10px 97px' }}>
               <ListItemText primary={item} />
-            </ListItemButton>
+            </ListItemButton></Link>
           </ListItem>
         ))}
         <ListItem key="Sign In" disablePadding>
@@ -57,51 +65,91 @@ function Navbar(props) {
     </Box>
   );
 
-  const container = window !== undefined ? () => window().document.body : undefined;
+  const container =
+    window !== undefined ? () => window().document.body : undefined;
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: "flex" }}>
       <CssBaseline />
       <AppBar
         component="nav"
         sx={{
-          backgroundColor: 'black',
-          minHeight: '80px',
+          backgroundColor: "black",
+          minHeight: "80px",
           zIndex: 1200,
-          position: 'fixed',
-          width: '100%',
+          position: "fixed",
+          width: "100%"
         }}
       >
-        <Toolbar sx={{ justifyContent: 'space-between', alignItems: 'center', mt: 1, p: 2 }}>
+        <Toolbar
+          sx={{
+            justifyContent: "space-between",
+            alignItems: "center",
+            mt: 1,
+            p: 2
+          }}
+        >
           <IconButton
             color="inherit"
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { md: 'none' } }}
+            sx={{ mr: 2, display: { md: "none" } }}
           >
             <MenuIcon />
           </IconButton>
-          <Box component="div" sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
-            <img src={assets.feyse} alt="Logo" style={{ height: 60, marginRight: 16 }} />
+          <Box
+            component="div"
+            sx={{ display: "flex", alignItems: "center", flexGrow: 1 }}
+          >
+            <img
+              src={assets.feyse}
+              alt="Logo"
+              style={{ height: 60, marginRight: 16 }}
+            />
           </Box>
-          <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
+          <Box
+            sx={{ display: { xs: "none", md: "flex" }, alignItems: "center" }}
+          >
             {navItems.map((item) => (
               <Link
                 key={item}
                 to={item.toLowerCase()}
                 smooth={true}
                 duration={500}
-                style={{ textDecoration: 'none' }}
+                style={{ textDecoration: "none" }}
               >
-                <Button sx={{ color: '#fff', mx: 4, ':hover': { borderBottom: '1px solid white' } }}>
+                <Button
+                  sx={{
+                    color: "#fff",
+                    mx: 4,
+                    ":hover": { borderBottom: "1px solid white" }
+                  }}
+                >
                   {item}
                 </Button>
               </Link>
             ))}
-            <Button variant="text" sx={{ color: '#fff', mx: 1, ':hover': { borderBottom: '1px solid white' } }}>Sign In</Button>
+            <Button
+              variant="text"
+              sx={{
+                color: "#fff",
+                mx: 1,
+                ":hover": { borderBottom: "1px solid white" }
+              }}
+            >
+              Sign In
+            </Button>
             <Typography color="#fff">/</Typography>
-            <Button sx={{ color: '#fff', mx: 1, ':hover': { borderBottom: '1px solid white' } }}>Sign Up</Button>
+            <Button
+              sx={{
+                color: "#fff",
+                mx: 1,
+                ":hover": { borderBottom: "1px solid white" }
+              }}
+            >
+              Sign Up
+            </Button>
           </Box>
         </Toolbar>
       </AppBar>
@@ -112,11 +160,14 @@ function Navbar(props) {
           open={mobileOpen}
           onClose={handleDrawerToggle}
           ModalProps={{
-            keepMounted: true,
+            keepMounted: true
           }}
           sx={{
-            display: { xs: 'block', md: 'none' },
-            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+            display: { xs: "block", md: "none" },
+            "& .MuiDrawer-paper": {
+              boxSizing: "border-box",
+              width: drawerWidth
+            }
           }}
         >
           {drawer}
@@ -127,7 +178,7 @@ function Navbar(props) {
 }
 
 Navbar.propTypes = {
-  window: PropTypes.func,
+  window: PropTypes.func
 };
 
 export default Navbar;
