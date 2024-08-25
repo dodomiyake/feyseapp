@@ -1,14 +1,44 @@
 import * as React from "react";
+import { useEffect, useRef } from "react";
 import Box from "@mui/material/Box";
 import ImageList from "@mui/material/ImageList";
 import ImageListItem from "@mui/material/ImageListItem";
 import Typography from "@mui/material/Typography";
 import { useTheme, useMediaQuery } from "@mui/material";
 import { images } from "../../assets/assets";
+import { motion, useAnimation } from "framer-motion";
+import { useInView } from "react-intersection-observer";
 
 export default function Gallery() {
-  const theme = useTheme(); // Get the current theme
-  const matchDownSm = useMediaQuery(theme.breakpoints.down('sm')); // Use the media query hook
+  const theme = useTheme();
+  const matchDownSm = useMediaQuery(theme.breakpoints.down('sm'));
+
+  const controls = useAnimation();
+  const { ref, inView } = useInView({
+    triggerOnce: true, // Only trigger once when in view
+    threshold: 0.1, // Trigger when 10% of the item is in view
+  });
+
+  useEffect(() => {
+    if (inView) {
+      controls.start("visible");
+    }
+  }, [controls, inView]);
+
+  const containerVariants = {
+    hidden: { opacity: 1 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, scale: 0.8 },
+    visible: { opacity: 1, scale: 1 },
+  };
 
   return (
     <Box
@@ -19,36 +49,51 @@ export default function Gallery() {
         backgroundColor: "#13100f"
       }}
     >
-      <Typography
-        variant="h3"
-        color="initial"
-        sx={{
-          color: "white",
-          textAlign: "center",
-          fontFamily: "Georgia",
-          marginBottom: '20px',
-          fontSize: { xs: 24, sm: 35, md: 40 }
-        }}
+      <motion.div
+        initial={{ opacity: 0, y: -50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
       >
-        Features
-      </Typography>
-      <ImageList
-        variant="masonry"
-        cols={matchDownSm ? 1 : 3} // Adjust columns based on media query
-        gap={20}
+        <Typography
+          variant="h3"
+          color="initial"
+          sx={{
+            color: "white",
+            textAlign: "center",
+            fontFamily: "Georgia",
+            marginBottom: '20px',
+            fontSize: { xs: 24, sm: 35, md: 40 }
+          }}
+        >
+          Features
+        </Typography>
+      </motion.div>
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        animate={controls}
+        ref={ref}
       >
-        {itemData.map((item) => (
-          <ImageListItem key={item.img}>
-            <img
-              srcSet={`${item.img}?w=248&fit=crop&auto=format&dpr=2 2x`}
-              src={`${item.img}?w=248&fit=crop&auto=format`}
-              alt={item.title}
-              loading="lazy"
-              style={{ borderRadius: '35px' }}
-            />
-          </ImageListItem>
-        ))}
-      </ImageList>
+        <ImageList
+          variant="masonry"
+          cols={matchDownSm ? 1 : 3}
+          gap={20}
+        >
+          {itemData.map((item) => (
+            <motion.div key={item.img} variants={itemVariants}>
+              <ImageListItem>
+                <img
+                  srcSet={`${item.img}?w=248&fit=crop&auto=format&dpr=2 2x`}
+                  src={`${item.img}?w=248&fit=crop&auto=format`}
+                  alt={item.title}
+                  loading="lazy"
+                  style={{ borderRadius: '35px' }}
+                />
+              </ImageListItem>
+            </motion.div>
+          ))}
+        </ImageList>
+      </motion.div>
     </Box>
   );
 }
