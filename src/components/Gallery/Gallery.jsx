@@ -15,8 +15,8 @@ export default function Gallery() {
 
   const controls = useAnimation();
   const { ref, inView } = useInView({
-    triggerOnce: true, // Only trigger once when in view
-    threshold: 0.1, // Trigger when 10% of the item is in view
+    triggerOnce: true,
+    threshold: 0.1,
   });
 
   useEffect(() => {
@@ -42,6 +42,7 @@ export default function Gallery() {
 
   return (
     <Box
+      id="feature" // This should match the link target
       sx={{
         width: "100%",
         height: "100%",

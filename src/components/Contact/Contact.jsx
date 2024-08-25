@@ -83,7 +83,7 @@ export default function Contact() {
       variants={containerVariants}
       transition={transition}
     >
-      <Box
+      <Box id="contact"
         sx={{
           flexGrow: 1,
           width: "100%",

@@ -16,6 +16,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import { useState } from "react";
+import { Link } from 'react-scroll'; // Import the Link component from react-scroll
 
 const drawerWidth = 240;
 const navItems = ["About", "Feature", "Contact"];
@@ -42,7 +43,6 @@ function Navbar(props) {
             </ListItemButton>
           </ListItem>
         ))}
-        {/* Add Sign In and Sign Up in the drawer for mobile */}
         <ListItem key="Sign In" disablePadding>
           <ListItemButton sx={{ textAlign: "center" }}>
             <ListItemText primary="Sign In" />
@@ -67,9 +67,9 @@ function Navbar(props) {
         sx={{
           backgroundColor: 'black',
           minHeight: '80px',
-          zIndex: 1200, // Make sure the AppBar is below the header
-          position: 'fixed', // Ensure it's fixed at the top
-          width: '100%', // Ensure it takes full width
+          zIndex: 1200,
+          position: 'fixed',
+          width: '100%',
         }}
       >
         <Toolbar sx={{ justifyContent: 'space-between', alignItems: 'center', mt: 1, p: 2 }}>
@@ -87,11 +87,18 @@ function Navbar(props) {
           </Box>
           <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
             {navItems.map((item) => (
-              <Button key={item} sx={{ color: '#fff', mx: 4, ':hover': { borderBottom: '1px solid white' } }}>
-                {item}
-              </Button>
+              <Link
+                key={item}
+                to={item.toLowerCase()}
+                smooth={true}
+                duration={500}
+                style={{ textDecoration: 'none' }}
+              >
+                <Button sx={{ color: '#fff', mx: 4, ':hover': { borderBottom: '1px solid white' } }}>
+                  {item}
+                </Button>
+              </Link>
             ))}
-            {/* Add the Sign In / Sign Up buttons */}
             <Button variant="text" sx={{ color: '#fff', mx: 1, ':hover': { borderBottom: '1px solid white' } }}>Sign In</Button>
             <Typography color="#fff">/</Typography>
             <Button sx={{ color: '#fff', mx: 1, ':hover': { borderBottom: '1px solid white' } }}>Sign Up</Button>
@@ -105,7 +112,7 @@ function Navbar(props) {
           open={mobileOpen}
           onClose={handleDrawerToggle}
           ModalProps={{
-            keepMounted: true, // Better open performance on mobile.
+            keepMounted: true,
           }}
           sx={{
             display: { xs: 'block', md: 'none' },

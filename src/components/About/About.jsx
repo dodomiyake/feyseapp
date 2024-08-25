@@ -10,13 +10,13 @@ import { useInView } from "react-intersection-observer";
 
 // Define a styled container with padding
 const Container = styled(Box)(({ theme }) => ({
-  padding: theme.spacing(4), // Add padding around the section
+  padding: theme.spacing(4) // Add padding around the section
 }));
 
 // Define a styled item to ensure equal height for the text and image
 const EqualHeightItem = styled(Grid)({
-  display: 'flex',
-  alignItems: 'stretch',
+  display: "flex",
+  alignItems: "stretch"
 });
 
 export default function About() {
@@ -24,7 +24,7 @@ export default function About() {
   const controls = useAnimation();
   const { ref, inView } = useInView({
     triggerOnce: true, // Only trigger once when in view
-    threshold: 0.1, // Trigger when 10% of the item is in view
+    threshold: 0.1 // Trigger when 10% of the item is in view
   });
 
   useEffect(() => {
@@ -34,11 +34,11 @@ export default function About() {
   }, [controls, inView]);
 
   return (
-    <>
+    <Box id="about">
       <motion.div
-        initial={{ opacity: 0, y: -50 }}  // Initial animation state (fade in from top)
-        animate={{ opacity: 1, y: 0 }}    // Final animation state (fully visible at original position)
-        transition={{ duration: 0.8 }}    // Duration of the animation
+        initial={{ opacity: 0, y: -50 }} // Initial animation state (fade in from top)
+        animate={{ opacity: 1, y: 0 }} // Final animation state (fully visible at original position)
+        transition={{ duration: 0.8 }} // Duration of the animation
       >
         <Typography
           variant="h3"
@@ -67,8 +67,8 @@ export default function About() {
                 borderRadius: "50px"
               }}
               initial={{ opacity: 0, scale: 0.8 }} // Initial animation state
-              animate={{ opacity: 1, scale: 1 }}   // Final animation state
-              transition={{ duration: 1 }} 
+              animate={{ opacity: 1, scale: 1 }} // Final animation state
+              transition={{ duration: 1 }}
             />
           </EqualHeightItem>
           <EqualHeightItem item xs={12} md={8}>
@@ -78,40 +78,52 @@ export default function About() {
               animate={controls} // Control animation based on inView status
               variants={{
                 hidden: { opacity: 0, y: 50 }, // Hidden state
-                visible: { opacity: 1, y: 0 }, // Visible state
+                visible: { opacity: 1, y: 0 } // Visible state
               }}
               transition={{ duration: 0.8 }} // Duration of the animation
             >
-              <Typography variant="body2" color="initial" sx={{ flex: 1, lineHeight: 2.5, marginTop: 1, paddingLeft: "10px"}}>
+              <Typography
+                variant="body2"
+                color="initial"
+                sx={{
+                  flex: 1,
+                  lineHeight: 2.5,
+                  marginTop: 1,
+                  paddingLeft: "10px"
+                }}
+              >
                 Quisque venenatis augue metus, at elementum ligula dignissim ac.
-                Maecenas quam turpis, placerat at ligula id, viverra aliquam nisl.
-                Donec sagittis nisi vitae nibh tincidunt bibendum. Cras a aliquam
-                orci. Sed nisi turpis, molestie sit amet volutpat sed, dignissim
-                in ex. Donec ac sollicitudin nisl, eget suscipit sem. Pellentesque
-                tristique, felis in tristique tempor, sem ligula auctor massa, a
-                volutpat turpis lacus quis tortor. Class aptent taciti sociosqu ad
-                litora torquent per conubia nostra, per inceptos himenaeos. Donec
-                eget pulvinar ante. Nunc a dapibus libero, ut volutpat odio.
-                Phasellus porta ultricies sem, imperdiet placerat nibh lacinia id.
-                Duis quis fermentum urna, vel sodales ligula.
-                Quisque venenatis augue metus, at elementum ligula dignissim ac.
-                Maecenas quam turpis, placerat at ligula id, viverra aliquam nisl.
-                Donec sagittis nisi vitae nibh tincidunt bibendum. Cras a aliquam
-                orci. Sed nisi turpis, molestie sit amet volutpat sed, dignissim
-                in ex. Donec ac sollicitudin nisl, eget suscipit sem. Pellentesque
-                tristique, felis in tristique tempor, sem ligula auctor massa, a
-                volutpat turpis lacus quis tortor. Class aptent taciti sociosqu ad
-                litora torquent per conubia nostra, per inceptos himenaeos. Donec
-                eget pulvinar ante. Nunc a dapibus libero, ut volutpat odio.
-                Phasellus porta ultricies sem, imperdiet placerat nibh lacinia id.
-                Duis quis fermentum urna, vel sodales ligula.Phasellus porta ultricies sem, imperdiet placerat nibh lacinia id.
-                Duis quis fermentum urna, vel sodales ligula.Phasellus porta ultricies sem, imperdiet placerat nibh lacinia id.
-                Duis quis fermentum urna, vel sodales ligula.
+                Maecenas quam turpis, placerat at ligula id, viverra aliquam
+                nisl. Donec sagittis nisi vitae nibh tincidunt bibendum. Cras a
+                aliquam orci. Sed nisi turpis, molestie sit amet volutpat sed,
+                dignissim in ex. Donec ac sollicitudin nisl, eget suscipit sem.
+                Pellentesque tristique, felis in tristique tempor, sem ligula
+                auctor massa, a volutpat turpis lacus quis tortor. Class aptent
+                taciti sociosqu ad litora torquent per conubia nostra, per
+                inceptos himenaeos. Donec eget pulvinar ante. Nunc a dapibus
+                libero, ut volutpat odio. Phasellus porta ultricies sem,
+                imperdiet placerat nibh lacinia id. Duis quis fermentum urna,
+                vel sodales ligula. Quisque venenatis augue metus, at elementum
+                ligula dignissim ac. Maecenas quam turpis, placerat at ligula
+                id, viverra aliquam nisl. Donec sagittis nisi vitae nibh
+                tincidunt bibendum. Cras a aliquam orci. Sed nisi turpis,
+                molestie sit amet volutpat sed, dignissim in ex. Donec ac
+                sollicitudin nisl, eget suscipit sem. Pellentesque tristique,
+                felis in tristique tempor, sem ligula auctor massa, a volutpat
+                turpis lacus quis tortor. Class aptent taciti sociosqu ad litora
+                torquent per conubia nostra, per inceptos himenaeos. Donec eget
+                pulvinar ante. Nunc a dapibus libero, ut volutpat odio.
+                Phasellus porta ultricies sem, imperdiet placerat nibh lacinia
+                id. Duis quis fermentum urna, vel sodales ligula.Phasellus porta
+                ultricies sem, imperdiet placerat nibh lacinia id. Duis quis
+                fermentum urna, vel sodales ligula.Phasellus porta ultricies
+                sem, imperdiet placerat nibh lacinia id. Duis quis fermentum
+                urna, vel sodales ligula.
               </Typography>
             </motion.div>
           </EqualHeightItem>
         </Grid>
       </Container>
-    </>
+    </Box>
   );
 }
