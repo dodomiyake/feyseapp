@@ -16,13 +16,12 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import { useState } from "react";
-import { Link } from "react-scroll"; // Import the Link component from react-scroll
+import { Link } from "react-scroll";
 
 const drawerWidth = 240;
 const navItems = ["About", "Feature", "Contact"];
 
-function Navbar(props) {
-  const { window } = props;
+function Navbar({ window, setShowSignin, setShowSignup }) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const handleDrawerToggle = () => {
@@ -44,20 +43,31 @@ function Navbar(props) {
               smooth={true}
               duration={500}
             >
-            <ListItemButton sx={{ textAlign: "center", width: '100%',
-                  justifyContent: 'center',
-                  padding: '10px 97px' }}>
-              <ListItemText primary={item} />
-            </ListItemButton></Link>
+              <ListItemButton
+                sx={{
+                  textAlign: "center",
+                  width: "100%",
+                  justifyContent: "center",
+                  padding: "10px 97px",
+                }}
+              >
+                <ListItemText primary={item} />
+              </ListItemButton>
+            </Link>
           </ListItem>
         ))}
         <ListItem key="Sign In" disablePadding>
-          <ListItemButton sx={{ textAlign: "center" }}>
+          <ListItemButton
+            sx={{ textAlign: "center" }}
+            onClick={() => setShowSignin(true)} // Open the Signin modal
+          >
             <ListItemText primary="Sign In" />
           </ListItemButton>
         </ListItem>
         <ListItem key="Sign Up" disablePadding>
-          <ListItemButton sx={{ textAlign: "center" }}>
+          <ListItemButton sx={{ textAlign: "center" }}
+          onClick={() => setShowSignup(true)} // Open the Signup modal
+          >
             <ListItemText primary="Sign Up" />
           </ListItemButton>
         </ListItem>
@@ -65,8 +75,7 @@ function Navbar(props) {
     </Box>
   );
 
-  const container =
-    window !== undefined ? () => window().document.body : undefined;
+  const container = window !== undefined ? () => window().document.body : undefined;
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -78,7 +87,7 @@ function Navbar(props) {
           minHeight: "80px",
           zIndex: 1200,
           position: "fixed",
-          width: "100%"
+          width: "100%",
         }}
       >
         <Toolbar
@@ -86,7 +95,7 @@ function Navbar(props) {
             justifyContent: "space-between",
             alignItems: "center",
             mt: 1,
-            p: 2
+            p: 2,
           }}
         >
           <IconButton
@@ -108,9 +117,7 @@ function Navbar(props) {
               style={{ height: 60, marginRight: 16 }}
             />
           </Box>
-          <Box
-            sx={{ display: { xs: "none", md: "flex" }, alignItems: "center" }}
-          >
+          <Box sx={{ display: { xs: "none", md: "flex" }, alignItems: "center" }}>
             {navItems.map((item) => (
               <Link
                 key={item}
@@ -123,7 +130,7 @@ function Navbar(props) {
                   sx={{
                     color: "#fff",
                     mx: 4,
-                    ":hover": { borderBottom: "1px solid white" }
+                    ":hover": { borderBottom: "1px solid white" },
                   }}
                 >
                   {item}
@@ -135,8 +142,9 @@ function Navbar(props) {
               sx={{
                 color: "#fff",
                 mx: 1,
-                ":hover": { borderBottom: "1px solid white" }
+                ":hover": { borderBottom: "1px solid white" },
               }}
+              onClick={() => setShowSignin(true)}
             >
               Sign In
             </Button>
@@ -145,8 +153,9 @@ function Navbar(props) {
               sx={{
                 color: "#fff",
                 mx: 1,
-                ":hover": { borderBottom: "1px solid white" }
+                ":hover": { borderBottom: "1px solid white" },
               }}
+              onClick={() => setShowSignup(true)}
             >
               Sign Up
             </Button>
@@ -160,14 +169,14 @@ function Navbar(props) {
           open={mobileOpen}
           onClose={handleDrawerToggle}
           ModalProps={{
-            keepMounted: true
+            keepMounted: true,
           }}
           sx={{
             display: { xs: "block", md: "none" },
             "& .MuiDrawer-paper": {
               boxSizing: "border-box",
-              width: drawerWidth
-            }
+              width: drawerWidth,
+            },
           }}
         >
           {drawer}
@@ -178,7 +187,8 @@ function Navbar(props) {
 }
 
 Navbar.propTypes = {
-  window: PropTypes.func
+  window: PropTypes.func,
+  setShowLogin: PropTypes.func.isRequired, // Ensure this prop is marked as required
 };
 
 export default Navbar;

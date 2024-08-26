@@ -83,7 +83,7 @@ export default function Gallery() {
           {itemData.map((item) => (
             <motion.div key={item.img} variants={itemVariants}>
               <ImageListItem>
-                <img
+                <img 
                   srcSet={`${item.img}?w=248&fit=crop&auto=format&dpr=2 2x`}
                   src={`${item.img}?w=248&fit=crop&auto=format`}
                   alt={item.title}
