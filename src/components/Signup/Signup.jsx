@@ -9,7 +9,7 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
 import OutlinedInput from "@mui/material/OutlinedInput";
-import Typography from '@mui/material/Typography';
+import Typography from "@mui/material/Typography";
 
 const Signup = () => {
   // State hooks for input values and validation errors
@@ -35,9 +35,11 @@ const Signup = () => {
     const value = event.target.value;
     setEmail(value);
     setEmailError(
-      !value ? "Email is required." :
-      !/\S+@\S+\.\S+/.test(value) ? "Email is invalid." :
-      ""
+      !value
+        ? "Email is required."
+        : !/\S+@\S+\.\S+/.test(value)
+        ? "Email is invalid."
+        : ""
     );
   };
 
@@ -46,9 +48,11 @@ const Signup = () => {
     const value = event.target.value;
     setPassword(value);
     setPasswordError(
-      !value ? "Password is required." :
-      value.length < 6 ? "Password must be at least 6 characters long." :
-      ""
+      !value
+        ? "Password is required."
+        : value.length < 6
+        ? "Password must be at least 6 characters long."
+        : ""
     );
   };
 
@@ -57,8 +61,7 @@ const Signup = () => {
     const value = event.target.value;
     setConfirmPassword(value);
     setConfirmPasswordError(
-      value !== password ? "Passwords do not match." :
-      ""
+      value !== password ? "Passwords do not match." : ""
     );
   };
 
@@ -69,8 +72,17 @@ const Signup = () => {
     if (!name) setNameError("Name is required.");
     if (!email) setEmailError("Email is required.");
     if (!password) setPasswordError("Password is required.");
-    if (!confirmPassword) setConfirmPasswordError("Confirm password is required.");
-    if (name && email && password && confirmPassword && !emailError && !passwordError && !confirmPasswordError) {
+    if (!confirmPassword)
+      setConfirmPasswordError("Confirm password is required.");
+    if (
+      name &&
+      email &&
+      password &&
+      confirmPassword &&
+      !emailError &&
+      !passwordError &&
+      !confirmPasswordError
+    ) {
       // Proceed with form submission or other actions
       console.log("Form submitted:", { name, email, password });
 
@@ -97,7 +109,13 @@ const Signup = () => {
       autoComplete="off"
       onSubmit={handleSubmit}
     >
-      <Typography variant="h4" color="initial" sx={{ textAlign: "center", mb: 2 }}>Sign up</Typography>
+      <Typography
+        variant="h4"
+        color="initial"
+        sx={{ textAlign: "center", mb: 2 }}
+      >
+        Sign up
+      </Typography>
       <div>
         <TextField
           required
@@ -154,7 +172,9 @@ const Signup = () => {
       </FormControl>
 
       <FormControl sx={{ m: 1, width: "35ch" }} variant="outlined">
-        <InputLabel htmlFor="outlined-adornment-confirm-password">Confirm Password</InputLabel>
+        <InputLabel htmlFor="outlined-adornment-confirm-password">
+          Confirm Password
+        </InputLabel>
         <OutlinedInput
           id="outlined-adornment-confirm-password"
           type={showPassword ? "text" : "password"}
@@ -185,7 +205,18 @@ const Signup = () => {
         )}
       </FormControl>
 
-      <Button variant="contained" type="submit" sx={{ width: "41ch", mt: 2 }}>
+      <Button
+        variant="contained"
+        type="submit"
+        sx={{
+          width: "41ch",
+          mt: 2,
+          backgroundColor: "black",
+          "&:hover": {
+            backgroundColor: "#252525" // Dark grey color on hover
+          }
+        }}
+      >
         Sign up
       </Button>
     </Box>

@@ -147,7 +147,15 @@ const Signin = () => {
         )}
       </FormControl>
 
-      <Button variant="contained" type="submit" sx={{ width: "41ch", mt: 2 }}>
+      <Button variant="contained" type="submit" 
+      sx={{ 
+        width: "41ch", 
+        mt: 2, 
+        backgroundColor: 'black',
+        "&:hover": {
+            backgroundColor: "#252525" // Dark grey color on hover
+          }
+        }}>
         Sign in
       </Button>
     </Box>
