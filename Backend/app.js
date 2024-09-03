@@ -22,14 +22,18 @@ connectDB(); // Ensure this function connects to MongoDB correctly
 
 // Middleware setup
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:5174', // Update this with your frontend URL in production
+    credentials: true
+}));
+
 
 // Setup session store
 const store = MongoStore.create({
     mongoUrl: dbUrl,
     touchAfter: 24 * 60 * 60,
     crypto: {
-        secret: 'thisshouldbeasecret!'
+        secret: process.env.SESSION_SECRET || 'defaultsecret',
     }
 });
 
@@ -40,11 +44,12 @@ store.on('error', function(e) {
 // Session configuration
 const sessionConfig = {
     store,
-    secret: 'thisshouldbeasecret!',
+    secret: process.env.SESSION_SECRET || 'defaultsecret',
     resave: false,
     saveUninitialized: true,
     cookie: {
         httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
         expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
         maxAge: 1000 * 60 * 60 * 24 * 7
     }

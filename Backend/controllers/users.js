@@ -1,7 +1,7 @@
 const User = require("../models/User");
 
 module.exports.signupForm = (req, res) => {
-  // res.render("user/signup");
+  // Placeholder function if you plan to render a form.
   console.log(req.body);
 };
 
@@ -10,36 +10,40 @@ module.exports.signupUser = async (req, res) => {
     const { name, email, password } = req.body;
     const user = new User({ name, email });
     const signupUser = await User.register(user, password);
+
     req.login(signupUser, (err) => {
-      if (err) return next(err);
-      // req.flash("success", `Welcome to YelpCamp Campground, ${username}!`);
-      res.redirect("/profilePage");
+      if (err) {
+        console.error('Login error:', err);
+        return res.status(500).json({ message: 'Error during login. Please try again.' });
+      }
+      // Respond with success message or user data if needed
+      res.status(200).json({ message: 'Signup successful!' });
     });
   } catch (e) {
-    // req.flash('error', e.message);
-    res.redirect("signup");
+    console.error('Signup error:', e.message);
+    res.status(400).json({ message: e.message });
   }
 };
 
 module.exports.signinForm = (req, res) => {
-//   res.render("user/signin");
+  // Placeholder function if you plan to render a form.
   console.log(req.body);
 };
 
 module.exports.signinUser = (req, res) => {
-    const { name } = req.body;
-    // req.flash('success', `Welcome back, ${username}!`);
-    const redirectUrl = res.locals.returnTo || '/campgrounds';
-    delete req.session.returnTo;
-    res.redirect(redirectUrl)
-}
+  const { name } = req.body;
+  // Respond with success or user data if needed
+  const redirectUrl = res.locals.returnTo || '/campgrounds';
+  delete req.session.returnTo;
+  res.status(200).json({ redirectUrl });
+};
 
 module.exports.signoutUser = (req, res, next) => {
-    req.logout(function (err) {
-        if (err) {
-            return next(err);
-        }
-        // req.flash('success', 'Goodbye!');
-        res.redirect('/');
-    });
-}
+  req.logout(function (err) {
+    if (err) {
+      return next(err);
+    }
+    // Respond with success message
+    res.status(200).json({ message: 'Logged out successfully!' });
+  });
+};

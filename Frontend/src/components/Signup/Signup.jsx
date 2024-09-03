@@ -26,6 +26,7 @@ const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [serverError, setServerError] = useState("");
+  const [successMessage, setSuccessMessage] = useState(""); // New state for success messages
 
   const handleNameChange = (event) => {
     const value = event.target.value;
@@ -65,6 +66,7 @@ const Signup = () => {
     );
   };
 
+  
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -91,17 +93,25 @@ const Signup = () => {
       setLoading(true);
       setServerError("");
       try {
-        const response = await axios.post('http://localhost:5000/api/users/signup', { name, email, password });
+        const response = await axios.post('http://localhost:4040/api/signup', { name, email, password }, { withCredentials: true });
         console.log('Response:', response.data);
-        navigate('/');
+        setSuccessMessage('Signup successful! Redirecting...');
+        setName("");          // Clear name
+        setEmail("");         // Clear email
+        setPassword("");      // Clear password
+        setConfirmPassword(""); // Clear confirm password
+        setTimeout(() => {
+          navigate('/');
+        }, 2000); // Delay redirect to show message
       } catch (error) {
-        console.error('Error during signup:', error);
+        console.error('Error during signup:', error.response ? error.response.data : error.message);
         setServerError('Error during signup. Please try again.');
       } finally {
         setLoading(false);
       }
     }
-  };
+};
+
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -215,6 +225,15 @@ const Signup = () => {
           sx={{ color: "red", mt: 2, textAlign: "center" }}
         >
           {serverError}
+        </Box>
+      )}
+
+      {successMessage && (
+        <Box
+          component="p"
+          sx={{ color: "green", mt: 2, textAlign: "center" }}
+        >
+          {successMessage}
         </Box>
       )}
 

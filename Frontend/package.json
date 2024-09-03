@@ -39,6 +39,7 @@
     "slick-carousel": "^1.8.1",
     "styled-components": "^6.1.12"
   },
+  "proxy": "http://localhost:4040",
   "devDependencies": {
     "@eslint/js": "^9.8.0",
     "@types/react": "^18.3.3",
