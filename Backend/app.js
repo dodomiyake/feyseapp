@@ -23,7 +23,7 @@ connectDB(); // Ensure this function connects to MongoDB correctly
 // Middleware setup
 app.use(express.json());
 app.use(cors({
-    origin: 'http://localhost:5174', // Update this with your frontend URL in production
+    origin: 'http://localhost:5173', // Update this with your frontend URL in production
     credentials: true
 }));
 

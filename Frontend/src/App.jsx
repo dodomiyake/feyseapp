@@ -32,6 +32,7 @@ const App = () => {
       <Box sx={{ mt: "85px" }}>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/signup" element={<Signup />} />
         </Routes>
       </Box>
       <Footer />

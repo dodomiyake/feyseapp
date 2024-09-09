@@ -11,6 +11,8 @@ import FormControl from "@mui/material/FormControl";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import Typography from "@mui/material/Typography";
 import axios from 'axios';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 import { useNavigate } from 'react-router-dom';
 
 const Signup = () => {
@@ -24,9 +26,14 @@ const Signup = () => {
   const [passwordError, setPasswordError] = useState("");
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [serverError, setServerError] = useState("");
-  const [successMessage, setSuccessMessage] = useState(""); // New state for success messages
+  const [successMessage, setSuccessMessage] = useState("");
+
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
 
   const handleNameChange = (event) => {
     const value = event.target.value;
@@ -49,11 +56,15 @@ const Signup = () => {
   const handlePasswordChange = (event) => {
     const value = event.target.value;
     setPassword(value);
+
+    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{6,}$/;
     setPasswordError(
       !value
         ? "Password is required."
         : value.length < 6
         ? "Password must be at least 6 characters long."
+        : !passwordPattern.test(value)
+        ? "Password must contain an uppercase letter, a lowercase letter, a number, and a special character."
         : ""
     );
   };
@@ -66,7 +77,6 @@ const Signup = () => {
     );
   };
 
-  
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -94,26 +104,37 @@ const Signup = () => {
       setServerError("");
       try {
         const response = await axios.post('http://localhost:4040/api/signup', { name, email, password }, { withCredentials: true });
-        console.log('Response:', response.data);
         setSuccessMessage('Signup successful! Redirecting...');
-        setName("");          // Clear name
-        setEmail("");         // Clear email
-        setPassword("");      // Clear password
-        setConfirmPassword(""); // Clear confirm password
+
+        setSnackbarMessage('Signup successful! Redirecting...');
+        setSnackbarSeverity('success');
+        setOpenSnackbar(true);
+
+        setName("");
+        setEmail("");
+        setPassword("");
+        setConfirmPassword("");
+        setNameError("");
+        setEmailError("");
+        setPasswordError("");
+        setConfirmPasswordError("");
+
         setTimeout(() => {
-          navigate('/');
-        }, 2000); // Delay redirect to show message
+          navigate('../');
+        }, 2000);
       } catch (error) {
         console.error('Error during signup:', error.response ? error.response.data : error.message);
-        setServerError('Error during signup. Please try again.');
+        setSnackbarMessage('Error during signup. Please try again.');
+        setSnackbarSeverity('error');
+        setOpenSnackbar(true);
       } finally {
         setLoading(false);
       }
     }
-};
-
+  };
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
+  const handleClickShowConfirmPassword = () => setShowConfirmPassword((show) => !show);
 
   return (
     <Box
@@ -123,13 +144,7 @@ const Signup = () => {
       autoComplete="off"
       onSubmit={handleSubmit}
     >
-      <Typography
-        variant="h4"
-        color="initial"
-        sx={{ textAlign: "center", mb: 2 }}
-      >
-        Sign up
-      </Typography>
+      <Typography variant="h4" sx={{ textAlign: "center", mb: 2 }}>Sign up</Typography>
       <div>
         <TextField
           required
@@ -186,12 +201,10 @@ const Signup = () => {
       </FormControl>
 
       <FormControl sx={{ m: 1, width: "35ch" }} variant="outlined">
-        <InputLabel htmlFor="outlined-adornment-confirm-password">
-          Confirm Password
-        </InputLabel>
+        <InputLabel htmlFor="outlined-adornment-confirm-password">Confirm Password</InputLabel>
         <OutlinedInput
           id="outlined-adornment-confirm-password"
-          type={showPassword ? "text" : "password"}
+          type={showConfirmPassword ? "text" : "password"}
           value={confirmPassword}
           onChange={handleConfirmPasswordChange}
           error={!!confirmPasswordError}
@@ -199,11 +212,11 @@ const Signup = () => {
             <InputAdornment position="end">
               <IconButton
                 aria-label="toggle password visibility"
-                onClick={handleClickShowPassword}
+                onClick={handleClickShowConfirmPassword}
                 onMouseDown={(event) => event.preventDefault()}
                 edge="end"
               >
-                {showPassword ? <VisibilityOff /> : <Visibility />}
+                {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
               </IconButton>
             </InputAdornment>
           }
@@ -219,24 +232,6 @@ const Signup = () => {
         )}
       </FormControl>
 
-      {serverError && (
-        <Box
-          component="p"
-          sx={{ color: "red", mt: 2, textAlign: "center" }}
-        >
-          {serverError}
-        </Box>
-      )}
-
-      {successMessage && (
-        <Box
-          component="p"
-          sx={{ color: "green", mt: 2, textAlign: "center" }}
-        >
-          {successMessage}
-        </Box>
-      )}
-
       <Button
         variant="contained"
         type="submit"
@@ -245,13 +240,24 @@ const Signup = () => {
           mt: 2,
           backgroundColor: "black",
           "&:hover": {
-            backgroundColor: "#252525" // Dark grey color on hover
+            backgroundColor: "#252525"
           }
         }}
-        disabled={loading} // Disable button while loading
+        disabled={loading}
       >
         {loading ? 'Signing up...' : 'Sign up'}
       </Button>
+
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={4000}
+        onClose={() => setOpenSnackbar(false)}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert onClose={() => setOpenSnackbar(false)} severity={snackbarSeverity} sx={{ width: '200%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };
