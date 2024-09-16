@@ -1,5 +1,6 @@
 const User = require("../models/User");
 
+
 module.exports.signupForm = (req, res) => {
   // Placeholder function if you plan to render a form.
   console.log(req.body);
@@ -7,8 +8,8 @@ module.exports.signupForm = (req, res) => {
 
 module.exports.signupUser = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
-    const user = new User({ name, email });
+    const { name, email, phoneNumber,password } = req.body;
+    const user = new User({ name, email, phoneNumber });
     const signupUser = await User.register(user, password);
 
     req.login(signupUser, (err) => {
@@ -31,9 +32,10 @@ module.exports.signinForm = (req, res) => {
 };
 
 module.exports.signinUser = (req, res) => {
-  const { name } = req.body;
+
+  const { email } = req.body;
   // Respond with success or user data if needed
-  const redirectUrl = res.locals.returnTo || '/campgrounds';
+  const redirectUrl = res.locals.returnTo || '/userprofile';
   delete req.session.returnTo;
   res.status(200).json({ redirectUrl });
 };

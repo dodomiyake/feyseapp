@@ -1,13 +1,12 @@
 import { useState } from "react";
-import React from "react";
 import Navbar from "./components/Navbar/Navbar";
 import Home from "./pages/Home/Home";
-import { Route, Routes } from "react-router-dom";
-import { Box, Modal, Typography } from "@mui/material";
+import UserProfile from "./pages/UserProfile/UserProfile"; // Import UserProfile
+import { Route, Routes, Navigate } from "react-router-dom";
+import { Box, Modal } from "@mui/material";
 import Footer from "./components/Footer/Footer";
 import Signin from "./components/Signin/Signin";
 import Signup from "./components/Signup/Signup";
-
 
 const App = () => {
   const [showSignin, setShowSignin] = useState(false);
@@ -32,7 +31,8 @@ const App = () => {
       <Box sx={{ mt: "85px" }}>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/signup" element={<Signup />} />
+          <Route path="/userprofile" element={<UserProfile />} />
+          <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </Box>
       <Footer />
@@ -45,7 +45,6 @@ const App = () => {
         aria-describedby="modal-modal-description"
       >
         <Box sx={modalStyle}>
-         
           <Signin />
         </Box>
       </Modal>
@@ -58,7 +57,6 @@ const App = () => {
         aria-describedby="modal-modal-description"
       >
         <Box sx={modalStyle}>
-         
           <Signup />
         </Box>
       </Modal>

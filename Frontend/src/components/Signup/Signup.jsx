@@ -1,4 +1,5 @@
 import { useState } from "react";
+import PropTypes from "prop-types";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -10,12 +11,15 @@ import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import Typography from "@mui/material/Typography";
-import axios from 'axios';
-import Snackbar from '@mui/material/Snackbar';
-import Alert from '@mui/material/Alert';
-import { useNavigate } from 'react-router-dom';
+import axios from "axios";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
+import { useNavigate } from "react-router-dom";
+import "react-phone-number-input/style.css";
+import { MuiTelInput } from "mui-tel-input";
+import isValidPhoneNumber from 'libphonenumber-js'; // Import phone number validation library
 
-const Signup = () => {
+const Signup = ({ onClose }) => {
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -25,15 +29,14 @@ const Signup = () => {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
+  const [phoneNumberError, setPhoneNumberError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [serverError, setServerError] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
-
-  const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [phoneNumber, setPhoneNumber] = useState("");
 
   const handleNameChange = (event) => {
     const value = event.target.value;
@@ -77,6 +80,15 @@ const Signup = () => {
     );
   };
 
+  const handlePhoneNumberChange = (value) => {
+    setPhoneNumber(value);
+    if (value && !isValidPhoneNumber(value)) {
+      setPhoneNumberError("Phone number is invalid.");
+    } else {
+      setPhoneNumberError("");
+    }
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -88,44 +100,75 @@ const Signup = () => {
           : ""
         : "Email is required."
     );
-    setPasswordError(password ? (password.length < 6 ? "Password must be at least 6 characters long." : "") : "Password is required.");
-    setConfirmPasswordError(confirmPassword ? (confirmPassword !== password ? "Passwords do not match." : "") : "Confirm password is required.");
+    setPasswordError(
+      password
+        ? password.length < 6
+          ? "Password must be at least 6 characters long."
+          : ""
+        : "Password is required."
+    );
+    setConfirmPasswordError(
+      confirmPassword
+        ? confirmPassword !== password
+          ? "Passwords do not match."
+          : ""
+        : "Confirm password is required."
+    );
+    setPhoneNumberError(
+      phoneNumber
+        ? isValidPhoneNumber(phoneNumber)
+          ? ""
+          : "Phone number is invalid."
+        : "Phone number is required."
+    );
 
     if (
       name &&
       email &&
       password &&
       confirmPassword &&
+      phoneNumber &&
       !emailError &&
       !passwordError &&
-      !confirmPasswordError
+      !confirmPasswordError &&
+      !phoneNumberError
     ) {
       setLoading(true);
-      setServerError("");
+      setSnackbarMessage("");
+      setSnackbarSeverity("success");
       try {
-        const response = await axios.post('http://localhost:4040/api/signup', { name, email, password }, { withCredentials: true });
-        setSuccessMessage('Signup successful! Redirecting...');
-
-        setSnackbarMessage('Signup successful! Redirecting...');
-        setSnackbarSeverity('success');
+        await axios.post(
+          "http://localhost:4040/api/signup",
+          { name, email, password, phoneNumber },
+          { withCredentials: true }
+        );
+        setSnackbarMessage("Signup successful! Redirecting...");
         setOpenSnackbar(true);
 
+        // Reset form fields
         setName("");
         setEmail("");
         setPassword("");
         setConfirmPassword("");
+        setPhoneNumber("");
         setNameError("");
         setEmailError("");
         setPasswordError("");
         setConfirmPasswordError("");
+        setPhoneNumberError("");
 
+        // Redirect after 2 seconds to allow Snackbar to show
         setTimeout(() => {
-          navigate('../');
+          navigate("/");
+          if (onClose) onClose();
         }, 2000);
       } catch (error) {
-        console.error('Error during signup:', error.response ? error.response.data : error.message);
-        setSnackbarMessage('Error during signup. Please try again.');
-        setSnackbarSeverity('error');
+        console.error(
+          "Error during signup:",
+          error.response ? error.response.data : error.message
+        );
+        setSnackbarMessage("Error during signup. Please try again.");
+        setSnackbarSeverity("error");
         setOpenSnackbar(true);
       } finally {
         setLoading(false);
@@ -134,7 +177,8 @@ const Signup = () => {
   };
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
-  const handleClickShowConfirmPassword = () => setShowConfirmPassword((show) => !show);
+  const handleClickShowConfirmPassword = () =>
+    setShowConfirmPassword((show) => !show);
 
   return (
     <Box
@@ -144,7 +188,9 @@ const Signup = () => {
       autoComplete="off"
       onSubmit={handleSubmit}
     >
-      <Typography variant="h4" sx={{ textAlign: "center", mb: 2 }}>Sign up</Typography>
+      <Typography variant="h4" sx={{ textAlign: "center", mb: 2 }}>
+        Sign up
+      </Typography>
       <div>
         <TextField
           required
@@ -167,6 +213,14 @@ const Signup = () => {
           helperText={emailError}
         />
       </div>
+
+      <MuiTelInput
+        value={phoneNumber}
+        onChange={handlePhoneNumberChange}
+        error={!!phoneNumberError}
+        helperText={phoneNumberError}
+        placeholder="Enter your phone number"
+      />
 
       <FormControl sx={{ m: 1, width: "35ch" }} variant="outlined">
         <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
@@ -201,7 +255,9 @@ const Signup = () => {
       </FormControl>
 
       <FormControl sx={{ m: 1, width: "35ch" }} variant="outlined">
-        <InputLabel htmlFor="outlined-adornment-confirm-password">Confirm Password</InputLabel>
+        <InputLabel htmlFor="outlined-adornment-confirm-password">
+          Confirm Password
+        </InputLabel>
         <OutlinedInput
           id="outlined-adornment-confirm-password"
           type={showConfirmPassword ? "text" : "password"}
@@ -245,21 +301,30 @@ const Signup = () => {
         }}
         disabled={loading}
       >
-        {loading ? 'Signing up...' : 'Sign up'}
+        {loading ? "Signing up..." : "Sign up"}
       </Button>
 
       <Snackbar
         open={openSnackbar}
         autoHideDuration={4000}
         onClose={() => setOpenSnackbar(false)}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >
-        <Alert onClose={() => setOpenSnackbar(false)} severity={snackbarSeverity} sx={{ width: '200%' }}>
+        <Alert
+          onClose={() => setOpenSnackbar(false)}
+          severity={snackbarSeverity}
+          sx={{ width: "100%" }}
+        >
           {snackbarMessage}
         </Alert>
       </Snackbar>
     </Box>
   );
+};
+
+// Define prop types for the component
+Signup.propTypes = {
+  onClose: PropTypes.func // PropTypes for the onClose prop
 };
 
 export default Signup;

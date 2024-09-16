@@ -1,23 +1,30 @@
 const mongoose = require("mongoose");
 const passportLocalMongoose = require("passport-local-mongoose");
 
-const userSchema = new mongoose.Schema({
-    name: {
-      type: String,
-      required: true,
-    },
-    email: {
-      type: String,
-      required: true,
-      unique: true,
-    }
+const UserSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+    lowercase: true // Ensure emails are stored in lowercase
+  },
+  phoneNumber: {
+    type: String, // Store phone number as a string to preserve the format
+    required: true,
+    unique: true, // Ensure phone numbers are unique
+  }
 });
 
 // Apply passport-local-mongoose plugin
-userSchema.plugin(passportLocalMongoose, {
-    usernameField: 'email', // Use email as the username field
+UserSchema.plugin(passportLocalMongoose, {
+  usernameField: "email" // Use email as the username field
 });
 
-const User = mongoose.model('User', userSchema);  
+// Check if the model already exists
+module.exports = mongoose.model('User', UserSchema);
 
-module.exports = User;
+
