@@ -10,10 +10,10 @@ import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import Typography from "@mui/material/Typography";
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-const Signin = () => {
+const Signin = ({ onClose }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
@@ -34,13 +34,7 @@ const Signin = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-  
-    // Reset errors before validation
-    setEmailError("");
-    setPasswordError("");
-    setServerError("");
-  
-    // Client-side validation
+
     if (!email) {
       setEmailError("Email is required.");
       return;
@@ -49,36 +43,39 @@ const Signin = () => {
       setPasswordError("Password is required.");
       return;
     }
-  
+
     try {
       const response = await axios.post(
         "http://localhost:4040/api/signin",
-        { email, password },
-        { withCredentials: true }  // Send cookies if needed
+        { email, password }, // Pass the credentials
+        { withCredentials: true } // Ensure cookies/sessions are sent
       );
-      console.log(response.data);
-  
-      if (response.data.success) {
-        // Navigate to user profile or any redirect URL provided by the server
-        const redirectUrl = response.data?.redirectUrl || "/userprofile";
-        navigate(redirectUrl);
-      } else {
-        // Handle any case where login wasn't successful but no error was thrown
-        setServerError(response.data?.message || "Login failed. Please try again.");
+
+      if (response.status === 200) {
+        const { userId } = response.data; // Assuming response contains userId
+
+        // If login is successful, redirect to UserProfile with dynamic userId
+        navigate(`/profile/${userId}`);
       }
     } catch (error) {
-      const errorMessage = error.response?.data?.message || "An error occurred. Please try again.";
-      setServerError(errorMessage);
+      setServerError(error.response?.data?.message || "Failed to sign in. Please try again.");
     }
   };
-  
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
   return (
-    <Box component="form" sx={{ "& .MuiTextField-root": { m: 1, width: "35ch" } }} noValidate autoComplete="off" onSubmit={handleSubmit}>
-      <Typography variant="h4" sx={{ textAlign: "center", mb: 2 }}>Sign in</Typography>
-      
+    <Box
+      component="form"
+      sx={{ "& .MuiTextField-root": { m: 1, width: "35ch" } }}
+      noValidate
+      autoComplete="off"
+      onSubmit={handleSubmit}
+    >
+      <Typography variant="h4" sx={{ textAlign: "center", mb: 2 }}>
+        Sign in
+      </Typography>
+
       <TextField
         required
         label="Email"
@@ -87,7 +84,7 @@ const Signin = () => {
         error={!!emailError}
         helperText={emailError}
       />
-      
+
       <FormControl sx={{ m: 1, width: "35ch" }} variant="outlined">
         <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
         <OutlinedInput
@@ -109,18 +106,43 @@ const Signin = () => {
           }
           label="Password"
         />
-        {passwordError && <Box component="p" sx={{ color: "red", mt: 1, ml: 1, fontSize: "1.3ch" }}>{passwordError}</Box>}
+        {passwordError && (
+          <Box
+            component="p"
+            sx={{ color: "red", mt: 1, ml: 1, fontSize: "1.3ch" }}
+          >
+            {passwordError}
+          </Box>
+        )}
       </FormControl>
 
-      {serverError && <Box component="p" sx={{ color: "red", mt: 1, ml: 1, fontSize: "1.3ch" }}>{serverError}</Box>}
+      {serverError && (
+        <Box
+          component="p"
+          sx={{ color: "red", mt: 1, ml: 1, fontSize: "1.3ch" }}
+        >
+          {serverError}
+        </Box>
+      )}
 
       <Button
         variant="contained"
         type="submit"
-        sx={{ width: "41ch", mt: 2, backgroundColor: "black", "&:hover": { backgroundColor: "#252525" } }}
+        sx={{
+          width: "41ch",
+          mt: 2,
+          backgroundColor: "black",
+          "&:hover": { backgroundColor: "#252525" },
+        }}
       >
         Sign in
       </Button>
+      <Box sx={{ textAlign: "center", mt: 2 }}>
+        Don’t have an account?{" "}
+        <span onClick={onClose} style={{ color: "blue", cursor: "pointer" }}>
+          Sign Up
+        </span>
+      </Box>
     </Box>
   );
 };

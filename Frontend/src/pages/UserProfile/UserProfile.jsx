@@ -1,121 +1,82 @@
-import { useState, useMemo } from "react";
-import PropTypes from 'prop-types';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import { createTheme } from '@mui/material/styles';
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import { AppProvider } from '@toolpad/core/AppProvider';
-import { DashboardLayout } from '@toolpad/core/DashboardLayout';
+import { useState, useEffect } from 'react';
+import { Card, CardContent, Typography, Avatar, Grid, CircularProgress, Container } from '@mui/material';
+import { useParams } from 'react-router-dom'; // Import useParams to access the userId from the URL
 
-const NAVIGATION = [
-  {
-    segment: 'dashboard',
-    title: 'Dashboard',
-    icon: <DashboardIcon />,
-  },
-];
+const UserProfile = () => {
+  const { userId } = useParams(); // Get userId from the URL parameters
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-const demoTheme = createTheme({
-  cssVariables: {
-    colorSchemeSelector: 'data-toolpad-color-scheme',
-  },
-  colorSchemes: { light: true, dark: true },
-  breakpoints: {
-    values: {
-      xs: 0,
-      sm: 600,
-      md: 600,
-      lg: 1200,
-      xl: 1536,
-    },
-  },
-});
+  // Function to fetch user data
+  const fetchUserData = async () => {
+    try {
+      // Update this to your backend endpoint
+      const response = await fetch(`http://localhost:4040/api/users/${userId}`);
+      console.log(response);
+      if (!response.ok) {
+        throw new Error('Failed to fetch user data');
+      }
+      const data = await response.json(); // Parse the JSON response
+      setUser(data); // Store user data in state
+    } catch (err) {
+      setError(err.message); // Set error state
+    } finally {
+      setLoading(false); // Stop the loading spinner
+    }
+  };
 
-function DemoPageContent({ pathname }) {
-  return (
-    <Box
-      sx={{
-        py: 4,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        textAlign: 'center',
-      }}
-    >
-      <Typography>Dashboard content for {pathname}</Typography>
-    </Box>
-  );
-}
+  useEffect(() => {
+    if (userId) {
+      fetchUserData(); // Fetch data when userId changes
+    }
+  }, [userId]); // Re-fetch data when userId changes
 
-DemoPageContent.propTypes = {
-  pathname: PropTypes.string.isRequired,
-};
+  // Return loading state, error, or profile
+  if (loading) {
+    return (
+      <Grid container justifyContent="center" alignItems="center" style={{ minHeight: '100vh' }}>
+        <CircularProgress />
+      </Grid>
+    );
+  }
 
-function UserProfile(props) {
-  const { window } = props;
+  if (error) {
+    return <Typography color="error">{error}</Typography>;
+  }
 
-  const [session, setSession] = useState({
-    user: {
-      name: 'Bharat Kashyap',
-      email: 'bharatkashyap@outlook.com',
-      image: 'https://avatars.githubusercontent.com/u/19550456',
-    },
-  });
-
-  const authentication = useMemo(() => {
-    return {
-      signIn: () => {
-        setSession({
-          user: {
-            name: 'Bharat Kashyap',
-            email: 'bharatkashyap@outlook.com',
-            image: 'https://avatars.githubusercontent.com/u/19550456',
-          },
-        });
-      },
-      signOut: () => {
-        setSession(null);
-      },
-    };
-  }, []);
-
-  const [pathname, setPathname] = useState('/dashboard');
-
-  const router = useMemo(() => {
-    return {
-      pathname,
-      searchParams: new URLSearchParams(),
-      navigate: (path) => setPathname(String(path)),
-    };
-  }, [pathname]);
-
-  // Remove this const when copying and pasting into your project.
-  const demoWindow = window !== undefined ? window() : undefined;
+  if (!user) {
+    return <Typography>No user data available</Typography>;
+  }
 
   return (
-    // preview-start
-    <AppProvider
-      session={session}
-      authentication={authentication}
-      navigation={NAVIGATION}
-      router={router}
-      theme={demoTheme}
-      window={demoWindow}
-    >
-      <DashboardLayout>
-        <DemoPageContent pathname={pathname} />
-      </DashboardLayout>
-    </AppProvider>
-    // preview-end
+    <Container maxWidth="sm">
+      <Card sx={{ mt: 5, textAlign: 'center', padding: '2rem' }}>
+        <Avatar
+          src={`https://i.pravatar.cc/150?u=${user._id}`} // Replace with user image if available
+          alt="Profile Picture"
+          sx={{ width: 100, height: 100, margin: '0 auto', mb: 2 }}
+        />
+        <CardContent>
+          <Typography variant="h5" component="div">
+            {user.name}
+          </Typography>
+          <Typography variant="body1" color="textSecondary">
+            Email: {user.email}
+          </Typography>
+          <Typography variant="body1" color="textSecondary">
+            Username: {user.username}
+          </Typography>
+          <Typography variant="body1" color="textSecondary">
+            Phone: {user.phone}
+          </Typography>
+          <Typography variant="body1" color="textSecondary">
+            Website: {user.website}
+          </Typography>
+        </CardContent>
+      </Card>
+    </Container>
   );
-}
-
-UserProfile.propTypes = {
-  /**
-   * Injected by the documentation to work in an iframe.
-   * Remove this when copying and pasting into your project.
-   */
-  window: PropTypes.func,
 };
 
 export default UserProfile;

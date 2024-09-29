@@ -17,7 +17,8 @@ const UserSchema = new mongoose.Schema({
     required: true,
     unique: true, // Ensure phone numbers are unique
   }
-});
+}, { timestamps: true }); // Automatically adds createdAt and updatedAt fields
+
 
 // Apply passport-local-mongoose plugin
 UserSchema.plugin(passportLocalMongoose, {

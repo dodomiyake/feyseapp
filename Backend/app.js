@@ -1,43 +1,42 @@
-if (process.env.NODE_ENV !== 'production') {
+if(process.env.NODE_ENV !== 'production'){
     require('dotenv').config();
-}
+  }
+  
 
-// Import necessary modules
 const express = require('express');
 const cors = require('cors');
 const connectDB = require('./db/db');
 const { readdirSync } = require('fs');
 const path = require('path');
 const passport = require('passport');
-const LocalStrategy = require('passport-local');
+const LocalStrategy = require('passport-local').Strategy;
 const session = require('express-session');
-const MongoStore = require('connect-mongo'); // Import MongoStore
-const User = require('./models/User'); // Import User model
+const MongoStore = require('connect-mongo');
+const User = require('./models/User');
 const flash = require('connect-flash');
 const cookieParser = require('cookie-parser');
-const helmet = require('helmet'); // Import Helmet
+const helmet = require('helmet');
 
 const app = express();
 const port = process.env.PORT || 4040;
-const dbUrl = process.env.MONGO_URL; // Define dbUrl from environment variables
+const dbUrl = process.env.MONGO_URL;
 
 // Connect to the database
-connectDB(); // Ensure this function connects to MongoDB correctly
+connectDB();
 
 // Middleware setup
-app.use(express.json()); // To parse JSON bodies
-app.use(express.urlencoded({ extended: true })); // To parse URL-encoded bodies
 app.use(cookieParser());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.use(cors({
-    origin: 'http://localhost:5173', // Update this with your frontend URL in production
+    origin: 'http://localhost:5173',
     credentials: true
 }));
 
-// Security middleware
-app.use(helmet()); // Add Helmet for security
+app.use(helmet());
 
-// Setup session store
+// Session setup
 const store = MongoStore.create({
     mongoUrl: dbUrl,
     touchAfter: 24 * 60 * 60,
@@ -50,32 +49,44 @@ store.on('error', function(e) {
     console.log('SESSION STORE ERROR', e);
 });
 
-// Session configuration
 const sessionConfig = {
     store,
     secret: process.env.SESSION_SECRET || 'defaultsecret',
     resave: false,
-    saveUninitialized: false, // Avoid creating sessions for non-logged-in users
+    saveUninitialized: false,
     cookie: {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production', // Ensure cookies are only sent over HTTPS in production
-        expires: Date.now() + 1000 * 60 * 60 * 24 * 7, // Cookie expires in 1 week
-        maxAge: 1000 * 60 * 60 * 24 * 7
-    }
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax', // This allows some cross-site usage but mitigates CSRF attacks
+        expires: Date.now() + 1000 * 60 * 60 * 24 * 7, // 7 days
+        maxAge: 1000 * 60 * 60 * 24 * 7 // 7 days in milliseconds
+    }    
 };
 
 app.use(session(sessionConfig));
 
+if (!process.env.SESSION_SECRET && process.env.NODE_ENV === 'production') {
+    console.error("SESSION_SECRET is not set in production!");
+    process.exit(1); // Or handle it accordingly
+  }
+  
+
 // Flash messages middleware
 app.use(flash());
 
-// Passport setup
+// Initialize Passport
 app.use(passport.initialize());
-app.use(passport.session());
+app.use(passport.session());  // If using session-based authentication
 
-passport.use(new LocalStrategy(User.authenticate())); // Use email as the username field
-passport.serializeUser(User.serializeUser()); // Serialize user to session
-passport.deserializeUser(User.deserializeUser()); // Deserialize user from session
+// Use LocalStrategy and tell Passport to use email as the username
+passport.use(new LocalStrategy({
+  usernameField: 'email',
+  passwordField: 'password'
+}, User.authenticate()));  // User.authenticate() is provided by passport-local-mongoose
+
+// Serialize and deserialize user (for session handling)
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 // Routes
 readdirSync(path.join(__dirname, './routes')).map((route) => {
@@ -88,8 +99,8 @@ app.get('/', (req, res) => {
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).send('Something went wrong!');
+    console.error('Global Error Handler:', err);
+    res.status(err.status || 500).json({ message: err.message || 'Internal Server Error' });
 });
 
 // Start server
