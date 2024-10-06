@@ -152,18 +152,23 @@ const handleFormSubmit = () => {
     try {
       const response = await fetch("/signout", {
         method: "GET",
-        credentials: "include" // Ensure cookies are sent with the request
+        credentials: "include", // Ensure cookies are sent with the request
       });
+  
       if (response.ok) {
+        console.log("Sign out successful. Redirecting to homepage...");
         // Sign out successful, now redirect to the homepage
         window.location.href = "/";
       } else {
-        console.error("Error during sign out:", response.statusText);
+        // Log any error returned by the server
+        const errorMessage = await response.text(); // Get the error message from the response body
+        console.error("Error during sign out:", response.statusText, errorMessage);
       }
     } catch (error) {
       console.error("Sign out failed:", error);
     }
   };
+  
 
   const renderMeasurementField = (label, name) => (
     <Grid item xs={6}>

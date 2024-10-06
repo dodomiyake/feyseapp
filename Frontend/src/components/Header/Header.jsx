@@ -70,6 +70,7 @@ export default function Header() {
         sx={{
           backgroundImage: `url(${bgImg})`,
           backgroundSize: "cover",
+          backgroundRepeat: "no-repeat",
           backgroundPosition: { xs: "center", md: "right" },
           width: "100%",
           height: "100vh",

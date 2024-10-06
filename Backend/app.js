@@ -74,6 +74,12 @@ if (!process.env.SESSION_SECRET && process.env.NODE_ENV === 'production') {
 // Flash messages middleware
 app.use(flash());
 
+app.use((req, res, next) => {
+    res.locals.success = req.flash('success');
+    res.locals.error = req.flash('error');
+    next();
+});
+
 // Initialize Passport
 app.use(passport.initialize());
 app.use(passport.session());  // If using session-based authentication

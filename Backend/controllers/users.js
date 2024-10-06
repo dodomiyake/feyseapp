@@ -39,8 +39,7 @@ module.exports.signinForm = (req, res) => {
   console.log(req.body);
 };
 
-module.exports.signinUser = (req, res, next) => {
-  console.log("Request Body:", req.body);  // Log the request body to check for email and password
+module.exports.signinUser = (req, res, next) => { // Log the request body to check for email and password
 
   passport.authenticate('local', (err, user, info) => {
     if (err) {
@@ -67,14 +66,35 @@ module.exports.signinUser = (req, res, next) => {
 };
 
 
-
 module.exports.signoutUser = (req, res, next) => {
   req.logout(function (err) {
     if (err) {
       console.error('Logout error:', err);
       return next(err);
     }
-    res.status(200).json({ message: 'Logged out successfully!' });
+
+    // Regenerate the session to prevent session fixation attacks
+    req.session.regenerate((err) => {
+      if (err) {
+        console.error('Error regenerating session:', err);
+        return next(err);
+      }
+
+      // Destroy the session after logout
+      req.session.destroy((err) => {
+        if (err) {
+          console.error('Error destroying session:', err);
+          return next(err);
+        }
+
+        // Clear the session cookie from the browser
+        res.clearCookie('connect.sid');
+
+        // Redirect or respond after successful logout
+        res.status(200).json({ message: 'Logged out successfully!' });
+      });
+    });
   });
 };
+
 
