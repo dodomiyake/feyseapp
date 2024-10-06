@@ -20,6 +20,7 @@ import {
   Hidden
 } from "@mui/material";
 import { PhotoCamera, Logout, Menu } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 
 const drawerWidth = 240; // Define the width of the drawer
 
@@ -77,17 +78,66 @@ const ProfilePage = () => {
 
   // Handle measurement changes
   const handleMeasurementChange = (e) => {
-    setMeasurements({
-      ...measurements,
-      [e.target.name]: e.target.value
-    });
+    const { name, value } = e.target;
+    const parsedValue = value === '' ? '' : parseFloat(value); // Parse input to float or allow clearing
+    if (!isNaN(parsedValue)) {
+      setMeasurements({
+        ...measurements,
+        [name]: parsedValue
+      });
+    }
   };
+  
 
   // Function to handle form submission
-  const handleFormSubmit = () => {
-    console.log("Submitted Measurements:", measurements);
-    // You can perform any further actions such as sending data to an API or validation here
-  };
+  // Function to handle form submission
+// Function to handle form submission and reset fields
+const handleFormSubmit = () => {
+  // Filter out empty fields
+  const filledMeasurements = Object.entries(measurements).reduce((acc, [key, value]) => {
+    if (value !== "" && value !== null && value !== undefined) {
+      acc[key] = value;
+    }
+    return acc;
+  }, {});
+
+  console.log("Submitted Measurements:", filledMeasurements);
+
+  // Reset the form fields
+  setMeasurements({
+    bust: "",
+    waist: "",
+    hip: "",
+    underBustLength: "",
+    underBustCircumference: "",
+    upperBustLength: "",
+    upperBustCircumference: "",
+    napeWaist: "",
+    xb: "",
+    chestWidth: "",
+    gownLength: "",
+    kneeLength: "",
+    kneeCircumference: "",
+    blouseLength: "",
+    topArm: "",
+    shoulder: "",
+    trouserWaist: "",
+    trouserHip: "",
+    thighCircumference: "",
+    crotch: "",
+    waistAnkle: "",
+    ankleCircumference: "",
+    trouserKneeLength: "",
+    trouserKneeCircumference: "",
+    trouserLength: "",
+    sleeveLength: "",
+    sleeveTopArm: "",
+    armElbow: "",
+    armWrist: "",
+    wristCircumference: ""
+  });
+};
+
 
   // Handle new comments
   const handleCommentSubmit = () => {
@@ -98,9 +148,38 @@ const ProfilePage = () => {
   };
 
   // Mock sign out function
-  const handleSignOut = () => {
-    console.log("Signed out");
+  const handleSignOut = async () => {
+    try {
+      const response = await fetch("/signout", {
+        method: "GET",
+        credentials: "include" // Ensure cookies are sent with the request
+      });
+      if (response.ok) {
+        // Sign out successful, now redirect to the homepage
+        window.location.href = "/";
+      } else {
+        console.error("Error during sign out:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Sign out failed:", error);
+    }
   };
+
+  const renderMeasurementField = (label, name) => (
+    <Grid item xs={6}>
+      <TextField
+        label={label}
+        name={name}
+        value={measurements[name]}
+        onChange={handleMeasurementChange}
+        fullWidth
+        inputProps={{
+          inputMode: 'numeric',
+          pattern: '[0-9]*',
+        }}
+      />
+    </Grid>
+  );
 
   // Handle dress images upload
   const handleDressImagesUpload = (e) => {
@@ -244,152 +323,22 @@ const ProfilePage = () => {
                   Measurements for Blouse/Dress
                 </Typography>
                 <Grid container spacing={2}>
-                  <Grid item xs={6}>
-                    <TextField
-                      label="Bust"
-                      name="bust"
-                      value={measurements.bust}
-                      onChange={handleMeasurementChange}
-                      fullWidth
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <TextField
-                      label="Waist"
-                      name="waist"
-                      value={measurements.waist}
-                      onChange={handleMeasurementChange}
-                      fullWidth
-                    />
-                  </Grid>
-                  {/* Add the remaining fields for Blouse/Dress */}
-                  <Grid item xs={6}>
-                    <TextField
-                      label="Hip"
-                      name="hip"
-                      value={measurements.hip}
-                      onChange={handleMeasurementChange}
-                      fullWidth
-                    />
-                  </Grid>
-                  {/* Add other fields as needed */}
-                  <Grid item xs={6}>
-                    <TextField
-                      label="Under Bust Length"
-                      name="underBustLength"
-                      value={measurements.underBustLength}
-                      onChange={handleMeasurementChange}
-                      fullWidth
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <TextField
-                      label="Under Bust Circumference"
-                      name="underBustCircumference"
-                      value={measurements.underBustCircumference}
-                      onChange={handleMeasurementChange}
-                      fullWidth
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <TextField
-                      label="Upper Bust Length"
-                      name="upperBustLength"
-                      value={measurements.upperBustLength}
-                      onChange={handleMeasurementChange}
-                      fullWidth
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <TextField
-                      label="Upper Bust Circumference"
-                      name="upperBustCircumference"
-                      value={measurements.upperBustCircumference}
-                      onChange={handleMeasurementChange}
-                      fullWidth
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <TextField
-                      label="Nape-Waist"
-                      name="napeWaist"
-                      value={measurements.napeWaist}
-                      onChange={handleMeasurementChange}
-                      fullWidth
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <TextField
-                      label="XB"
-                      name="xb"
-                      value={measurements.xb}
-                      onChange={handleMeasurementChange}
-                      fullWidth
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <TextField
-                      label="Chest Width"
-                      name="chestWidth"
-                      value={measurements.chestWidth}
-                      onChange={handleMeasurementChange}
-                      fullWidth
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <TextField
-                      label="Gown Length"
-                      name="gownLength"
-                      value={measurements.gownLength}
-                      onChange={handleMeasurementChange}
-                      fullWidth
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <TextField
-                      label="Knee Length"
-                      name="kneeLength"
-                      value={measurements.kneeLength}
-                      onChange={handleMeasurementChange}
-                      fullWidth
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <TextField
-                      label="Knee Circumference"
-                      name="kneeCircumference"
-                      value={measurements.kneeCircumference}
-                      onChange={handleMeasurementChange}
-                      fullWidth
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <TextField
-                      label="Blouse Length"
-                      name="blouseLength"
-                      value={measurements.blouseLength}
-                      onChange={handleMeasurementChange}
-                      fullWidth
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <TextField
-                      label="Top Arm"
-                      name="topArm"
-                      value={measurements.topArm}
-                      onChange={handleMeasurementChange}
-                      fullWidth
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <TextField
-                      label="Shoulder"
-                      name="shoulder"
-                      value={measurements.shoulder}
-                      onChange={handleMeasurementChange}
-                      fullWidth
-                    />
-                  </Grid>
+                {renderMeasurementField("Bust", "bust")}
+                  {renderMeasurementField("Waist", "waist")}
+                  {renderMeasurementField("Hip", "hip")}
+                  {renderMeasurementField("Under Bust Length", "underBustLength")}
+                  {renderMeasurementField("Under Bust Circumference", "underBustCircumference")}
+                  {renderMeasurementField("Upper Bust Length", "upperBustLength")}
+                  {renderMeasurementField("Upper Bust Circumference", "upperBustCircumference")}
+                  {renderMeasurementField("Nape-Waist", "napeWaist")}
+                  {renderMeasurementField("XB", "xb")}
+                  {renderMeasurementField("Chest Width", "chestWidth")}
+                  {renderMeasurementField("Gown Length", "gownLength")}
+                  {renderMeasurementField("Knee Length", "kneeLength")}
+                  {renderMeasurementField("Knee Circumference", "kneeCircumference")}
+                  {renderMeasurementField("Blouse Length", "blouseLength")}
+                  {renderMeasurementField("Top Arm", "topArm")}
+                  {renderMeasurementField("Shoulder", "shoulder")}
                 </Grid>
               </CardContent>
             </Card>
@@ -403,52 +352,12 @@ const ProfilePage = () => {
                   Measurements for Sleeve
                 </Typography>
                 <Grid container spacing={2}>
-                  <Grid item xs={6}>
-                    <TextField
-                      label="Sleeve Length"
-                      name="sleeveLength"
-                      value={measurements.sleeveLength}
-                      onChange={handleMeasurementChange}
-                      fullWidth
-                    />
-                  </Grid>
-                  {/* Add the remaining fields for Trouser */}
-                  <Grid item xs={6}>
-                    <TextField
-                      label="Top Arm"
-                      name="sleeveTopArm"
-                      value={measurements.sleeveTopArm}
-                      onChange={handleMeasurementChange}
-                      fullWidth
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <TextField
-                      label="Arm Elbow"
-                      name="armElbow"
-                      value={measurements.armElbow}
-                      onChange={handleMeasurementChange}
-                      fullWidth
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <TextField
-                      label="Arm Wrist"
-                      name="armWrist"
-                      value={measurements.armWrist}
-                      onChange={handleMeasurementChange}
-                      fullWidth
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <TextField
-                      label="Wrist Circumference"
-                      name="wristCircumference"
-                      value={measurements.wristCircumference}
-                      onChange={handleMeasurementChange}
-                      fullWidth
-                    />
-                  </Grid>
+                {renderMeasurementField("Sleeve Length", "sleeveLength")}
+                {renderMeasurementField("Top Arm", "sleeveTopArm")}
+                {renderMeasurementField("Arm Elbow", "armElbow")}
+                {renderMeasurementField("Arm Wrist", "armWrist")}
+                {renderMeasurementField("Wrist Circumference", "wristCircumference")}
+          
                 </Grid>
               </CardContent>
             </Card>
@@ -462,79 +371,16 @@ const ProfilePage = () => {
                   Measurements for Trouser
                 </Typography>
                 <Grid container spacing={2}>
-                  <Grid item xs={6}>
-                    <TextField
-                      label="Waist"
-                      name="trouserWaist"
-                      value={measurements.trouserWaist}
-                      onChange={handleMeasurementChange}
-                      fullWidth
-                    />
-                  </Grid>
-                  {/* Add the remaining fields for Trouser */}
-                  <Grid item xs={6}>
-                    <TextField
-                      label="Thigh Circumference"
-                      name="thighCircumference"
-                      value={measurements.thighCircumference}
-                      onChange={handleMeasurementChange}
-                      fullWidth
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <TextField
-                      label="Crotch"
-                      name="crotch"
-                      value={measurements.crotch}
-                      onChange={handleMeasurementChange}
-                      fullWidth
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <TextField
-                      label="Waist-Ankle"
-                      name="waistAnkle"
-                      value={measurements.waistAnkle}
-                      onChange={handleMeasurementChange}
-                      fullWidth
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <TextField
-                      label="Ankle Circumference"
-                      name="ankleCircumference"
-                      value={measurements.ankleCircumference}
-                      onChange={handleMeasurementChange}
-                      fullWidth
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <TextField
-                      label="Knee Length"
-                      name="trouserKneeLength"
-                      value={measurements.trouserKneeLength}
-                      onChange={handleMeasurementChange}
-                      fullWidth
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <TextField
-                      label="Knee Circumference"
-                      name="trouserKneeCircumference"
-                      value={measurements.trouserKneeCircumference}
-                      onChange={handleMeasurementChange}
-                      fullWidth
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <TextField
-                      label="Trouser Length"
-                      name="trouserLength"
-                      value={measurements.trouserLength}
-                      onChange={handleMeasurementChange}
-                      fullWidth
-                    />
-                  </Grid>
+                {renderMeasurementField("Waist", "trouserWaist")}
+                {renderMeasurementField("Hip", "trouserHip")}
+                {renderMeasurementField("Thigh Circumference", "thighCircumference")}
+                {renderMeasurementField("Crotch", "crotch")}
+                {renderMeasurementField("Waist Ankle", "waistAnkle")}
+                {renderMeasurementField("Ankle Circumference", "ankleCircumference")}
+                {renderMeasurementField("Knee Length", "trouserKneeLength")}
+                {renderMeasurementField("Knee Circumference", "trouserKneeCircumference")}
+                {renderMeasurementField("Trouser Length", "trouserLength")}
+                  
                 </Grid>
               </CardContent>
             </Card>

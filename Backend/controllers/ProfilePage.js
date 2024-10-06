@@ -1,0 +1,1 @@
+const ProfilePage = require('../models/ProfilePage');

@@ -89,8 +89,17 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 // Routes
-readdirSync(path.join(__dirname, './routes')).map((route) => {
-    app.use('/api', require(`./routes/${route}`));
+// readdirSync(path.join(__dirname, './routes')).map((route) => {
+//     app.use('/api', require(`./routes/${route}`));
+// });
+readdirSync(path.join(__dirname, './routes')).forEach((file) => {
+    const route = require(`./routes/${file}`);
+    
+    if (typeof route === 'function') {
+        app.use('/api', route);  // Use the route
+    } else {
+        console.error(`File ${file} does not export a valid middleware function.`);
+    }
 });
 
 app.get('/', (req, res) => {

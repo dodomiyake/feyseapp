@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const passport = require('passport');
 
 
 module.exports.signupForm = (req, res) => {
@@ -38,26 +39,31 @@ module.exports.signinForm = (req, res) => {
   console.log(req.body);
 };
 
-module.exports.signinUser = (req, res) => {
-  const { email } = req.body;
-  
-  if (!req.isAuthenticated()) {
-    return res.status(401).json({ message: 'Authentication failed. Invalid credentials.' });
-  }
-  
-  const redirectUrl = res.locals.returnTo || '/userprofile';
-  delete req.session.returnTo;
-  
-  // Send back user data with userId included
-  res.status(200).json({
-    message: 'Signin successful!',
-    redirectUrl,
-    userId: req.user._id, // Include userId in the response
-    user: {
-      name: req.user.name,
-      email: req.user.email,
-    },
-  });
+module.exports.signinUser = (req, res, next) => {
+  console.log("Request Body:", req.body);  // Log the request body to check for email and password
+
+  passport.authenticate('local', (err, user, info) => {
+    if (err) {
+      console.error("Error during authentication:", err);
+      return next(err);
+    }
+
+    // If no user is found, authentication failed
+    if (!user) {
+      return res.status(401).json({ message: info.message || "Authentication failed. Check your credentials." });
+    }
+
+    // Log the user in
+    req.logIn(user, (err) => {
+      if (err) {
+        console.error("Error during login:", err);
+        return next(err);
+      }
+
+      // Authentication successful, return the userId
+      res.status(200).json({ userId: user._id }); // Ensure user._id exists in your user model
+    });
+  })(req, res, next);
 };
 
 
