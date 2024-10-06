@@ -54,11 +54,11 @@ const ProfilePage = () => {
     trouserKneeCircumference: "",
     trouserLength: "",
     // Sleeve Measurements
-    sleeveLength: '',
-    sleeveTopArm: '',
-    armElbow: '',
-    armWrist: '',
-    wristCircumference: '',
+    sleeveLength: "",
+    sleeveTopArm: "",
+    armElbow: "",
+    armWrist: "",
+    wristCircumference: ""
   });
   const [comments, setComments] = useState([]);
   const [commentText, setCommentText] = useState("");
@@ -81,6 +81,12 @@ const ProfilePage = () => {
       ...measurements,
       [e.target.name]: e.target.value
     });
+  };
+
+  // Function to handle form submission
+  const handleFormSubmit = () => {
+    console.log("Submitted Measurements:", measurements);
+    // You can perform any further actions such as sending data to an API or validation here
   };
 
   // Handle new comments
@@ -156,7 +162,10 @@ const ProfilePage = () => {
   return (
     <Box sx={{ display: "flex" }}>
       {/* AppBar for mobile view */}
-      <AppBar position="fixed" sx={{ display: { md: "none"}, bgcolor: "black" }}>
+      <AppBar
+        position="fixed"
+        sx={{ display: { md: "none" }, bgcolor: "black" }}
+      >
         <Toolbar>
           <MuiIconButton
             color="inherit"
@@ -206,7 +215,7 @@ const ProfilePage = () => {
             "& .MuiDrawer-paper": {
               boxSizing: "border-box",
               width: drawerWidth,
-               bgcolor: "black",
+              bgcolor: "black",
               color: "white"
             }
           }}
@@ -529,6 +538,19 @@ const ProfilePage = () => {
                 </Grid>
               </CardContent>
             </Card>
+          </Grid>
+
+          {/* Submit Button */}
+          <Grid item xs={12}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleFormSubmit}
+              size="medium" // or "small" to make the button smaller
+              sx={{ mt: 2, display: "block" }} // center the button
+            >
+              Submit Measurements
+            </Button>
           </Grid>
 
           {/* Dress Upload Section */}
