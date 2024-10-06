@@ -8,7 +8,8 @@ const StyledFooter = styled(motion.footer)(({ theme }) => ({
   backgroundColor: "#1c1c1c",
   color: "#fff",
   padding: theme.spacing(6, 0),
-  position: "relative"
+  position: "relative",
+  zIndex: 1300,
 }));
 
 const BackToTopButton = styled(Button)({

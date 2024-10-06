@@ -48,16 +48,18 @@ module.exports.signinUser = (req, res) => {
   const redirectUrl = res.locals.returnTo || '/userprofile';
   delete req.session.returnTo;
   
-  // Optionally send back user data, such as name or email
+  // Send back user data with userId included
   res.status(200).json({
     message: 'Signin successful!',
     redirectUrl,
+    userId: req.user._id, // Include userId in the response
     user: {
       name: req.user.name,
       email: req.user.email,
     },
   });
 };
+
 
 
 module.exports.signoutUser = (req, res, next) => {
