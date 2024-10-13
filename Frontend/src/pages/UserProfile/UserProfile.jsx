@@ -17,9 +17,11 @@ import {
   AppBar,
   Toolbar,
   IconButton as MuiIconButton,
-  Hidden
+  Hidden,
+  Paper,
+  Collapse
 } from "@mui/material";
-import { PhotoCamera, Logout, Menu } from "@mui/icons-material";
+import { PhotoCamera, Logout, Menu, Delete, Reply, ExpandLess, ExpandMore } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 
 const drawerWidth = 240; // Define the width of the drawer
@@ -61,10 +63,9 @@ const ProfilePage = () => {
     armWrist: "",
     wristCircumference: ""
   });
-  const [comments, setComments] = useState([]);
-  const [commentText, setCommentText] = useState("");
   const [dressImages, setDressImages] = useState([]);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [expandedComments, setExpandedComments] = useState({});
 
   // Handle profile picture upload
   const handleProfilePicUpload = (e) => {
@@ -87,64 +88,115 @@ const ProfilePage = () => {
       });
     }
   };
-  
 
-  // Function to handle form submission
-  // Function to handle form submission
-// Function to handle form submission and reset fields
-const handleFormSubmit = () => {
-  // Filter out empty fields
-  const filledMeasurements = Object.entries(measurements).reduce((acc, [key, value]) => {
-    if (value !== "" && value !== null && value !== undefined) {
-      acc[key] = value;
-    }
-    return acc;
-  }, {});
+  // Function to handle form submission and reset fields
+  const handleFormSubmit = () => {
+    // Filter out empty fields
+    const filledMeasurements = Object.entries(measurements).reduce((acc, [key, value]) => {
+      if (value !== "" && value !== null && value !== undefined) {
+        acc[key] = value;
+      }
+      return acc;
+    }, {});
 
-  console.log("Submitted Measurements:", filledMeasurements);
+    console.log("Submitted Measurements:", filledMeasurements);
 
-  // Reset the form fields
-  setMeasurements({
-    bust: "",
-    waist: "",
-    hip: "",
-    underBustLength: "",
-    underBustCircumference: "",
-    upperBustLength: "",
-    upperBustCircumference: "",
-    napeWaist: "",
-    xb: "",
-    chestWidth: "",
-    gownLength: "",
-    kneeLength: "",
-    kneeCircumference: "",
-    blouseLength: "",
-    topArm: "",
-    shoulder: "",
-    trouserWaist: "",
-    trouserHip: "",
-    thighCircumference: "",
-    crotch: "",
-    waistAnkle: "",
-    ankleCircumference: "",
-    trouserKneeLength: "",
-    trouserKneeCircumference: "",
-    trouserLength: "",
-    sleeveLength: "",
-    sleeveTopArm: "",
-    armElbow: "",
-    armWrist: "",
-    wristCircumference: ""
-  });
-};
+    // Reset the form fields
+    setMeasurements({
+      bust: "",
+      waist: "",
+      hip: "",
+      underBustLength: "",
+      underBustCircumference: "",
+      upperBustLength: "",
+      upperBustCircumference: "",
+      napeWaist: "",
+      xb: "",
+      chestWidth: "",
+      gownLength: "",
+      kneeLength: "",
+      kneeCircumference: "",
+      blouseLength: "",
+      topArm: "",
+      shoulder: "",
+      trouserWaist: "",
+      trouserHip: "",
+      thighCircumference: "",
+      crotch: "",
+      waistAnkle: "",
+      ankleCircumference: "",
+      trouserKneeLength: "",
+      trouserKneeCircumference: "",
+      trouserLength: "",
+      sleeveLength: "",
+      sleeveTopArm: "",
+      armElbow: "",
+      armWrist: "",
+      wristCircumference: ""
+    });
+  };
 
+  // Handle dress images upload
+  const handleDressImagesUpload = (e) => {
+    const files = Array.from(e.target.files);
 
-  // Handle new comments
-  const handleCommentSubmit = () => {
+    // Log the name of each uploaded image
+    files.forEach((file) => console.log("Uploaded Image:", file.name));
+
+    const newImages = files.map((file) => {
+      const reader = new FileReader();
+      return new Promise((resolve) => {
+        reader.onloadend = () => {
+          resolve({ src: reader.result, comments: [] });
+        };
+        reader.readAsDataURL(file);
+      });
+    });
+
+    Promise.all(newImages).then((images) => {
+      setDressImages([...dressImages, ...images]);
+    });
+  };
+
+  // Handle adding a comment to a specific image
+  const handleAddComment = (index, commentText) => {
     if (commentText) {
-      setComments([...comments, commentText]);
-      setCommentText("");
+      const updatedImages = [...dressImages];
+      updatedImages[index].comments.push({ text: commentText, user: "User", replies: [] });
+      setDressImages(updatedImages);
+
+      // Log the user and the comment content
+      console.log("User:", "User");
+      console.log("Comment Content:", commentText);
     }
+  };
+
+  // Handle adding a reply to a specific comment
+  const handleAddReply = (imageIndex, commentIndex, replyText) => {
+    if (replyText) {
+      const updatedImages = [...dressImages];
+      updatedImages[imageIndex].comments[commentIndex].replies.push({ text: replyText, user: "User" });
+      setDressImages(updatedImages);
+
+      // Log the user and the reply content
+      console.log("User:", "User");
+      console.log("Reply Content:", replyText);
+    }
+  };
+
+  // Handle deleting a comment from a specific image
+  const handleDeleteComment = (imageIndex, commentIndex) => {
+    const updatedImages = [...dressImages];
+    updatedImages[imageIndex].comments.splice(commentIndex, 1);
+    setDressImages(updatedImages);
+  };
+
+  // Handle expanding and collapsing replies
+  const toggleReplies = (imageIndex, commentIndex) => {
+    setExpandedComments(prevState => ({
+      ...prevState,
+      [`${imageIndex}-${commentIndex}`]: !prevState[`${imageIndex}-${commentIndex}`]
+    }));
   };
 
   // Mock sign out function
@@ -167,41 +219,6 @@ const handleFormSubmit = () => {
     } catch (error) {
       console.error("Sign out failed:", error);
     }
-  };
-  
-
-  const renderMeasurementField = (label, name) => (
-    <Grid item xs={6}>
-      <TextField
-        label={label}
-        name={name}
-        value={measurements[name]}
-        onChange={handleMeasurementChange}
-        fullWidth
-        inputProps={{
-          inputMode: 'numeric',
-          pattern: '[0-9]*',
-        }}
-      />
-    </Grid>
-  );
-
-  // Handle dress images upload
-  const handleDressImagesUpload = (e) => {
-    const files = Array.from(e.target.files);
-    const newImages = files.map((file) => {
-      const reader = new FileReader();
-      return new Promise((resolve) => {
-        reader.onloadend = () => {
-          resolve(reader.result);
-        };
-        reader.readAsDataURL(file);
-      });
-    });
-
-    Promise.all(newImages).then((images) => {
-      setDressImages([...dressImages, ...images]);
-    });
   };
 
   // Toggle for mobile drawer
@@ -328,80 +345,33 @@ const handleFormSubmit = () => {
                   Measurements for Blouse/Dress
                 </Typography>
                 <Grid container spacing={2}>
-                {renderMeasurementField("Bust", "bust")}
-                  {renderMeasurementField("Waist", "waist")}
-                  {renderMeasurementField("Hip", "hip")}
-                  {renderMeasurementField("Under Bust Length", "underBustLength")}
-                  {renderMeasurementField("Under Bust Circumference", "underBustCircumference")}
-                  {renderMeasurementField("Upper Bust Length", "upperBustLength")}
-                  {renderMeasurementField("Upper Bust Circumference", "upperBustCircumference")}
-                  {renderMeasurementField("Nape-Waist", "napeWaist")}
-                  {renderMeasurementField("XB", "xb")}
-                  {renderMeasurementField("Chest Width", "chestWidth")}
-                  {renderMeasurementField("Gown Length", "gownLength")}
-                  {renderMeasurementField("Knee Length", "kneeLength")}
-                  {renderMeasurementField("Knee Circumference", "kneeCircumference")}
-                  {renderMeasurementField("Blouse Length", "blouseLength")}
-                  {renderMeasurementField("Top Arm", "topArm")}
-                  {renderMeasurementField("Shoulder", "shoulder")}
+                  {Object.keys(measurements).map((key) => (
+                    <Grid item xs={6} key={key}>
+                      <TextField
+                        label={key.replace(/([A-Z])/g, ' $1')}
+                        name={key}
+                        value={measurements[key]}
+                        onChange={handleMeasurementChange}
+                        fullWidth
+                        inputProps={{
+                          inputMode: 'numeric',
+                          pattern: '[0-9]*',
+                        }}
+                      />
+                    </Grid>
+                  ))}
                 </Grid>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleFormSubmit}
+                  size="medium"
+                  sx={{ mt: 2, display: "block", backgroundColor: "#1b1b1b", color: "white", '&:hover': { backgroundColor: '#555' } }}
+                >
+                  Submit Measurements
+                </Button>
               </CardContent>
             </Card>
-          </Grid>
-
-          {/* Sleeve Measurements */}
-          <Grid item xs={12}>
-            <Card>
-              <CardContent>
-                <Typography variant="h6" gutterBottom>
-                  Measurements for Sleeve
-                </Typography>
-                <Grid container spacing={2}>
-                {renderMeasurementField("Sleeve Length", "sleeveLength")}
-                {renderMeasurementField("Top Arm", "sleeveTopArm")}
-                {renderMeasurementField("Arm Elbow", "armElbow")}
-                {renderMeasurementField("Arm Wrist", "armWrist")}
-                {renderMeasurementField("Wrist Circumference", "wristCircumference")}
-          
-                </Grid>
-              </CardContent>
-            </Card>
-          </Grid>
-
-          {/* Trouser Measurements */}
-          <Grid item xs={12}>
-            <Card>
-              <CardContent>
-                <Typography variant="h6" gutterBottom>
-                  Measurements for Trouser
-                </Typography>
-                <Grid container spacing={2}>
-                {renderMeasurementField("Waist", "trouserWaist")}
-                {renderMeasurementField("Hip", "trouserHip")}
-                {renderMeasurementField("Thigh Circumference", "thighCircumference")}
-                {renderMeasurementField("Crotch", "crotch")}
-                {renderMeasurementField("Waist Ankle", "waistAnkle")}
-                {renderMeasurementField("Ankle Circumference", "ankleCircumference")}
-                {renderMeasurementField("Knee Length", "trouserKneeLength")}
-                {renderMeasurementField("Knee Circumference", "trouserKneeCircumference")}
-                {renderMeasurementField("Trouser Length", "trouserLength")}
-                  
-                </Grid>
-              </CardContent>
-            </Card>
-          </Grid>
-
-          {/* Submit Button */}
-          <Grid item xs={12}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleFormSubmit}
-              size="medium" // or "small" to make the button smaller
-              sx={{ mt: 2, display: "block" }} // center the button
-            >
-              Submit Measurements
-            </Button>
           </Grid>
 
           {/* Dress Upload Section */}
@@ -415,6 +385,7 @@ const handleFormSubmit = () => {
                   variant="outlined"
                   component="label"
                   startIcon={<PhotoCamera />}
+                  sx={{ backgroundColor: "#1b1b1b", color: "white", '&:hover': { backgroundColor: '#555' } }}
                 >
                   Upload Images
                   <input
@@ -425,55 +396,88 @@ const handleFormSubmit = () => {
                     onChange={handleDressImagesUpload}
                   />
                 </Button>
-                <Grid container spacing={2} sx={{ mt: 2 }}>
+                <Grid container spacing={2} sx={{ mt: 2, justifyContent: 'center' }}>
                   {dressImages.map((image, index) => (
-                    <Grid item xs={4} key={index}>
-                      <img
-                        src={image}
-                        alt={`Dress ${index + 1}`}
-                        style={{
-                          width: "100%",
-                          height: "auto",
-                          borderRadius: 8
-                        }}
-                      />
+                    <Grid item xs={12} md={12} lg={12} key={index}>
+                      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                        <img
+                          src={image.src}
+                          alt={`Dress ${index + 1}`}
+                          style={{
+                            width: "80%",
+                            height: "auto",
+                            borderRadius: 8
+                          }}
+                        />
+                      </Box>
+                      {/* Comment Section for Each Image */}
+                      <Box sx={{ mt: 2, width: "80%", marginLeft: "auto", marginRight: "auto" }}>
+                        <Typography variant="subtitle1">Comments:</Typography>
+                        <List>
+                          {image.comments.map((comment, commentIndex) => (
+                            <React.Fragment key={commentIndex}>
+                              <ListItem secondaryAction={
+                                <>
+                                  <IconButton edge="end" aria-label="reply" onClick={() => document.getElementById(`reply-input-${index}-${commentIndex}`).focus()}>
+                                    <Reply />
+                                  </IconButton>
+                                  <IconButton edge="end" aria-label="delete" onClick={() => handleDeleteComment(index, commentIndex)}>
+                                    <Delete />
+                                  </IconButton>
+                                </>
+                              }>
+                                <ListItemText primary={`${comment.user}: ${comment.text}`} />
+                                <IconButton onClick={() => toggleReplies(index, commentIndex)}>
+                                  {expandedComments[`${index}-${commentIndex}`] ? <ExpandLess /> : <ExpandMore />}
+                                </IconButton>
+                              </ListItem>
+                              <Collapse in={expandedComments[`${index}-${commentIndex}`]} timeout="auto" unmountOnExit>
+                                <Box component={Paper} elevation={3} sx={{ mt: 1, pl: 2, pb: 1, pt: 1, borderRadius: 2 }}>
+                                  <List>
+                                    {comment.replies.map((reply, replyIndex) => (
+                                      <ListItem key={replyIndex}>
+                                        <ListItemText primary={`${reply.user}: ${reply.text}`} />
+                                      </ListItem>
+                                    ))}
+                                  </List>
+                                  <TextField
+                                    id={`reply-input-${index}-${commentIndex}`}
+                                    label="Add a Reply"
+                                    fullWidth
+                                    multiline
+                                    rows={1}
+                                    sx={{ mt: 1 }}
+                                    onKeyDown={(e) => {
+                                      if (e.key === 'Enter' && !e.shiftKey) {
+                                        e.preventDefault();
+                                        handleAddReply(index, commentIndex, e.target.value);
+                                        e.target.value = '';
+                                      }
+                                    }}
+                                  />
+                                </Box>
+                              </Collapse>
+                            </React.Fragment>
+                          ))}
+                        </List>
+                        <TextField
+                          label="Add a Comment"
+                          fullWidth
+                          multiline
+                          rows={2}
+                          sx={{ mt: 2 }}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' && !e.shiftKey) {
+                              e.preventDefault();
+                              handleAddComment(index, e.target.value);
+                              e.target.value = '';
+                            }
+                          }}
+                        />
+                      </Box>
                     </Grid>
                   ))}
                 </Grid>
-              </CardContent>
-            </Card>
-          </Grid>
-
-          {/* Comment Section */}
-          <Grid item xs={12}>
-            <Card>
-              <CardContent>
-                <Typography variant="h6" gutterBottom>
-                  Comments
-                </Typography>
-                <List>
-                  {comments.map((comment, index) => (
-                    <ListItem key={index}>
-                      <ListItemText primary={comment} />
-                    </ListItem>
-                  ))}
-                </List>
-                <TextField
-                  label="Add a Comment"
-                  value={commentText}
-                  onChange={(e) => setCommentText(e.target.value)}
-                  fullWidth
-                  multiline
-                  rows={2}
-                  sx={{ mt: 2 }}
-                />
-                <Button
-                  variant="contained"
-                  sx={{ mt: 2 }}
-                  onClick={handleCommentSubmit}
-                >
-                  Add Comment
-                </Button>
               </CardContent>
             </Card>
           </Grid>
