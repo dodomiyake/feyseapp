@@ -14,6 +14,6 @@ router.route("/signin")
 .post(storeReturnTo, users.signinUser); 
 
 
-router.get("/signout", users.signoutUser);
+router.post("/signout", users.signoutUser);
 
 module.exports = router;

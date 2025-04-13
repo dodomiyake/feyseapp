@@ -200,11 +200,13 @@ const ProfilePage = () => {
   };
 
   // Mock sign out function
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4040/api";
+
   const handleSignOut = async () => {
     try {
-      const response = await fetch("/signout", {
-        method: "GET",
-        credentials: "include", // Ensure cookies are sent with the request
+      const response = await fetch(`${API_URL}/signout`, {
+        method: "POST", // Make sure backend route is POST
+        credentials: "include",
       });
   
       if (response.ok) {
