@@ -25,7 +25,7 @@ connectDB();
 
 const allowedOrigins = [
   'http://localhost:5173',
-  'https://feyseapp-1.onrender.com/'
+  'https://feyseapp-1.onrender.com'
 ];
 
 // Middleware
